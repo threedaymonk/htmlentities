@@ -2,6 +2,7 @@
 require 'open-uri'
 require 'uri'
 
+# Start off with an XHTML DTD
 DTD_URI = 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'
 entities = {}
 
@@ -19,10 +20,14 @@ dtd.scan(/<!ENTITY \s+ % \s+ (\w+) \s+ PUBLIC \s+ "(.*?)" \s+ "(.*?)" \s* >/x) d
   end
 end
 
-puts "module HTMLEntities"
-puts "  module Data"
-puts "    MAP = {"
+# These two are a special case in the W3C entity file, so fix them:
+entities['lt']  = ?<
+entities['amp'] = ?&
+
+puts 'module HTMLEntities'
+puts '  class Data #:nodoc:'
+puts '    MAP = {'
 puts(entities.keys.sort_by{ |s| [s.downcase, s] }.map{ |name| "      '#{name}' => #{entities[name]}" }.join(",\n"))
-puts "    }"
-puts "  end"
-puts "end"
+puts '    }'
+puts '  end'
+puts 'end'

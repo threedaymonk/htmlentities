@@ -1,3 +1,9 @@
+== 3.1.0 (2007-01-19)
+* Now understands all the entities referred to in the XHTML 1.0 DTD (253 
+  entities compared with 131 in version 3.0.1).
+* Calls to_s on parameters to play nicely with Rails 1.2.1.
+* Entity mapping data is now lazily loaded.
+
 == 3.0.1 (2005-04-08)
 * Improved documentation.
 
