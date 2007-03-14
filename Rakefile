@@ -3,12 +3,14 @@ require "rake/gempackagetask"
 require "rake/testtask"
 require "zlib"
 require "rake/clean"
-require './lib/htmlentities'
 
-ENTITY_DATA_FILE = 'lib/htmlentities/data.rb'
+$:.unshift(File.dirname(__FILE__) + '/lib')
+require 'htmlentities'
+
 CLEAN.include("doc")
-
-SOURCES = FileList["lib/**/*.rb", ENTITY_DATA_FILE]
+DOCTYPES = %w[html4 xhtml1]
+DATA_FILES = DOCTYPES.map{ |d| "lib/htmlentities/#{d}.rb" }
+SOURCES = FileList["lib/**/*.rb"] - DATA_FILES
 
 task :default => :test
 
@@ -18,7 +20,7 @@ spec = Gem::Specification.new do |s|
   s.author = "Paul Battley"
   s.email = "pbattley@gmail.com"
   s.summary = "A module for encoding and decoding (X)HTML entities."
-  s.files = FileList['{lib,test}/**/*.rb', ENTITY_DATA_FILE]
+  s.files = FileList['{lib,test}/**/*.rb']
   s.require_path = "lib"
   s.test_file = 'test/all.rb'
   s.has_rdoc = true
@@ -36,10 +38,15 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-file ENTITY_DATA_FILE => %w[util/build_entities.rb] do |f|
-  sh %{ruby util/build_entities.rb > #{f.name}}
+DOCTYPES.each do |name|
+  file "lib/htmlentities/#{name}.rb" => %w[util/build_entities.rb] do |f|
+    rm_f f.name
+    sh %{ruby util/build_entities.rb #{name} > #{f.name}}
+  end
 end
 
 file "doc" => SOURCES do |f|
-  sh %{rdoc lib}
+  sh %{rdoc #{SOURCES.join(' ')}}
 end
+
+task :entities => DATA_FILES
