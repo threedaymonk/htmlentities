@@ -75,6 +75,7 @@ class HTMLEntities
       raise InstructionError,
       "unknown encode_entities command(s): #{unknown_instructions.inspect}"
     end
+    
     basic_entity_encoder =
     if instructions.include?(:basic) || instructions.include?(:named)
       :encode_named
@@ -84,14 +85,22 @@ class HTMLEntities
       :encode_hexadecimal
     end
     string.gsub!(basic_entity_regexp){ __send__(basic_entity_encoder, $&) }
+    
+    extended_entity_encoders = []
     if instructions.include?(:named)
-      string.gsub!(extended_entity_regexp){ encode_named($&) }
+      extended_entity_encoders << :encode_named
     end
     if instructions.include?(:decimal)
-      string.gsub!(extended_entity_regexp){ encode_decimal($&) }
+      extended_entity_encoders << :encode_decimal
     elsif instructions.include?(:hexadecimal)
-      string.gsub!(extended_entity_regexp){ encode_hexadecimal($&) }
+      extended_entity_encoders << :encode_hexadecimal
     end
+    unless extended_entity_encoders.empty?
+      string.gsub!(extended_entity_regexp){
+        encode_extended(extended_entity_encoders, $&)
+      }
+    end
+    
     return string
   end
 
@@ -134,7 +143,7 @@ private
 
   def encode_named(char)
     cp = char.unpack('U')[0]
-    (e = reverse_map[cp]) ? "&#{e};" : char
+    (e = reverse_map[cp]) && "&#{e};"
   end
 
   def encode_decimal(char)
@@ -143,6 +152,14 @@ private
 
   def encode_hexadecimal(char)
     "&#x#{char.unpack('U')[0].to_s(16)};"
+  end
+  
+  def encode_extended(encoders, char)
+    encoders.each do |encoder|
+      encoded = __send__(encoder, char)
+      return encoded if encoded
+    end
+    return char
   end
 
 end
