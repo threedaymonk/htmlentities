@@ -1,3 +1,12 @@
+== 4.0.0 (2007-03-15)
+* New instantiation-based interface (but legacy interface is preserved for
+  compatibility.
+* Handles HTML4 as well as XHTML1 (the former lacks the &apos; entity).
+* Encodes basic entities numerically when :basic isn't specified and :decimal
+  or :hexadecimal is.
+* Performs a maximum of two gsub passes instead of three when encoding, which
+  should be more efficient on long strings.
+
 == 3.1.0 (2007-01-19)
 * Now understands all the entities referred to in the XHTML 1.0 DTD (253 
   entities compared with 131 in version 3.0.1).
