@@ -52,6 +52,22 @@ class HTMLEntities::EntitiesTest < Test::Unit::TestCase
     assert_encode('&lt;', '<', :basic)
     assert_encode('&lt;', '<')
   end
+  
+  def test_should_encode_basic_entities_to_decimal
+    assert_encode('&#38;', '&', :decimal)
+    assert_encode('&#34;', '"', :decimal)
+    assert_encode('&#60;', '<', :decimal)
+    assert_encode('&#62;', '>', :decimal)
+    assert_encode('&#39;', "'", :decimal)
+  end
+
+  def test_should_encode_basic_entities_to_hexadecimal
+    assert_encode('&#x26;', '&', :hexadecimal)
+    assert_encode('&#x22;', '"', :hexadecimal)
+    assert_encode('&#x3c;', '<', :hexadecimal)
+    assert_encode('&#x3e;', '>', :hexadecimal)
+    assert_encode('&#x27;', "'", :hexadecimal)
+  end
 
   def test_should_decode_extended_named_entities
     assert_decode('±', '&plusmn;')
@@ -174,8 +190,6 @@ class HTMLEntities::EntitiesTest < Test::Unit::TestCase
     pseudo_string = PseudoString.new('foo')
     assert_encode('foo', pseudo_string)
   end
-
-private
 
   def assert_decode(expected, input)
     [xhtml1_entities, html4_entities].each do |coder|

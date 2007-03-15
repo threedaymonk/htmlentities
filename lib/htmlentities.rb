@@ -8,24 +8,17 @@ class HTMLEntities
 
   VERSION = '4.0.0'
   FLAVORS = %w[html4 xhtml1]
+  INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal]
 
   class InstructionError < RuntimeError
   end
   class UnknownFlavor < RuntimeError
   end
 
-  UTF8_NON_ASCII_REGEXP = /[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+/
-  ENCODE_ENTITIES_COMMAND_ORDER = {
-    :basic => 0,
-    :named => 1,
-    :decimal => 2,
-    :hexadecimal => 3
-  }
-  
   #
   # Create a new HTMLEntities coder for the specified flavor.
   # Available flavors are 'html4' and 'xhtml1' (the default).
-  # The only difference in functionality between the two is in the handling of the apos 
+  # The only difference in functionality between the two is in the handling of the apos
   # (apostrophe) named entity, which is not defined in HTML4.
   #
   def initialize(flavor='xhtml1')
@@ -75,42 +68,31 @@ class HTMLEntities
   # contains valid UTF-8 before calling this method.
   #
   def encode(source, *instructions)
-    string = source.to_s
-    output = nil
+    string = source.to_s.dup
     if (instructions.empty?)
       instructions = [:basic]
-    else
-      instructions = instructions.sort_by { |instruction|
-        ENCODE_ENTITIES_COMMAND_ORDER[instruction] ||
-        (raise InstructionError, "unknown encode_entities command `#{instruction.inspect}'")
-      }
+    elsif (unknown_instructions = instructions - INSTRUCTIONS) != []
+      raise InstructionError,
+      "unknown encode_entities command(s): #{unknown_instructions.inspect}"
     end
-    instructions.each do |instruction|
-      case instruction
-      when :basic
-        # Handled as basic ASCII
-        output = (output || string).gsub(basic_entity_regexp) {
-          # It's safe to use the simpler [0] here because we know
-          # that the basic entities are ASCII.
-          '&' << reverse_map[$&[0]] << ';'
-        }
-      when :named
-        # Test everything except printable ASCII
-        output = (output || string).gsub(UTF8_NON_ASCII_REGEXP) {
-          cp = $&.unpack('U')[0]
-          (e = reverse_map[cp]) ?  "&#{e};" : $&
-        }
-      when :decimal
-        output = (output || string).gsub(UTF8_NON_ASCII_REGEXP) {
-          "&##{$&.unpack('U')[0]};"
-        }
-      when :hexadecimal
-        output = (output || string).gsub(UTF8_NON_ASCII_REGEXP) {
-          "&#x#{$&.unpack('U')[0].to_s(16)};"
-        }
-      end
+    basic_entity_encoder =
+    if instructions.include?(:basic) || instructions.include?(:named)
+      :encode_named
+    elsif instructions.include?(:decimal)
+      :encode_decimal
+    else instructions.include?(:hexadecimal)
+      :encode_hexadecimal
     end
-    return output
+    string.gsub!(basic_entity_regexp){ __send__(basic_entity_encoder, $&) }
+    if instructions.include?(:named)
+      string.gsub!(extended_entity_regexp){ encode_named($&) }
+    end
+    if instructions.include?(:decimal)
+      string.gsub!(extended_entity_regexp){ encode_decimal($&) }
+    elsif instructions.include?(:hexadecimal)
+      string.gsub!(extended_entity_regexp){ encode_hexadecimal($&) }
+    end
+    return string
   end
 
 private
@@ -129,6 +111,14 @@ private
       end
     )
   end
+  
+  def extended_entity_regexp
+    @extended_entity_regexp ||= (
+      regexp = '[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+'
+      regexp += "|'" if @flavor == 'html4'
+      Regexp.new(regexp)
+    )
+  end
 
   def named_entity_regexp
     @named_entity_regexp ||= (
@@ -140,6 +130,19 @@ private
 
   def reverse_map
     @reverse_map ||= map.invert
+  end
+
+  def encode_named(char)
+    cp = char.unpack('U')[0]
+    (e = reverse_map[cp]) ? "&#{e};" : char
+  end
+
+  def encode_decimal(char)
+    "&##{char.unpack('U')[0]};"
+  end
+
+  def encode_hexadecimal(char)
+    "&#x#{char.unpack('U')[0].to_s(16)};"
   end
 
 end
