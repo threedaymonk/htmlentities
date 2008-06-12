@@ -1,3 +1,9 @@
+== 4.0.1 (2008-06-03)
+* Added :expanded charset -- the ~1000 SGML entities from
+  ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/SGML.TXT (extra code by
+  Philip (flip) Kromer <flip@infochimps.org>, entity info from John Cowan
+  <cowan@ccil.org> #)
+
 == 4.0.0 (2007-03-15)
 * New instantiation-based interface (but legacy interface is preserved for
   compatibility.

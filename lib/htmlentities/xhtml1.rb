@@ -1,5 +1,4 @@
 class HTMLEntities
-  MAPPINGS = {} unless defined? MAPPINGS
   MAPPINGS['xhtml1'] = {
     'Aacute' => 193,
     'aacute' => 225,

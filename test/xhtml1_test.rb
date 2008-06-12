@@ -20,4 +20,9 @@ class HTMLEntities::XHTML1Test < Test::Unit::TestCase
     assert_equal "é'", html_entities.decode("&eacute;&apos;")
   end
 
+  def test_should_not_decode_dotted_entity
+    assert_equal "&b.Theta;", html_entities.decode("&b.Theta;")
+  end
+
+
 end
