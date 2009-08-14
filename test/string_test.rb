@@ -3,7 +3,7 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'htmlentities/string'
 require 'test/unit'
 
-$KCODE = 'u'
+$KCODE = 'u' unless "1.9".respond_to?(:encoding)
 
 class TestHTMLEntities < Test::Unit::TestCase
   

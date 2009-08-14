@@ -3,7 +3,7 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'htmlentities'
 require 'test/unit'
 
-$KCODE = 'u'
+$KCODE = 'u' unless "1.9".respond_to?(:encoding)
 
 #
 # Test that version 3.x functionality still works

@@ -85,6 +85,7 @@ class HTMLEntities
   #
   def encode(source, *instructions)
     string = source.to_s.dup
+
     if (instructions.empty?)
       instructions = [:basic]
     elsif (unknown_instructions = instructions - INSTRUCTIONS) != []
@@ -139,7 +140,11 @@ private
   
   def extended_entity_regexp
     @extended_entity_regexp ||= (
-      regexp = '[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+'
+      if encoding_aware?
+        regexp = '[^\u{20}-\u{7E}]'
+      else
+        regexp = '[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+'
+      end
       regexp += "|'" if @flavor == 'html4'
       Regexp.new(regexp)
     )
@@ -185,4 +190,7 @@ private
     return char
   end
 
+  def encoding_aware?
+    "1.9".respond_to?(:encoding)
+  end
 end
