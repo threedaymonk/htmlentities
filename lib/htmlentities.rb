@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require 'htmlentities/legacy'
+require 'htmlentities/flavors'
 
 #
 # HTML entity encoding and decoding for Ruby
@@ -8,10 +9,7 @@ require 'htmlentities/legacy'
 class HTMLEntities
 
   VERSION = '4.0.0'
-  FLAVORS = %w[html4 xhtml1 expanded]
   INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal]
-  MAPPINGS           = {} unless defined? MAPPINGS
-  SKIP_DUP_ENCODINGS = {} unless defined? SKIP_DUP_ENCODINGS
 
   class InstructionError < RuntimeError
   end
@@ -124,7 +122,7 @@ class HTMLEntities
 private
 
   def map
-    @map ||= (require "htmlentities/#{@flavor}"; HTMLEntities::MAPPINGS[@flavor])
+    HTMLEntities::MAPPINGS[@flavor]
   end
 
   def basic_entity_regexp

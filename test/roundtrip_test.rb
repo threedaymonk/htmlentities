@@ -1,9 +1,7 @@
 # encoding: UTF-8
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'htmlentities'
 require 'test/unit'
-require 'htmlentities/xhtml1'
-require 'htmlentities/html4'
+require 'htmlentities'
 
 class HTMLEntities::RoundtripTest < Test::Unit::TestCase
 
