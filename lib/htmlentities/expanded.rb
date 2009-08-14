@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class HTMLEntities
   #
   # This table added by Philip (flip) Kromer <flip@infochimps.org>

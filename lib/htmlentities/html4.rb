@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class HTMLEntities
   MAPPINGS['html4'] = {
     'Aacute' => 193,

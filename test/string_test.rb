@@ -1,3 +1,4 @@
+# encoding: UTF-8
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'htmlentities/string'
 require 'test/unit'
