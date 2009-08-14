@@ -42,9 +42,7 @@ class HTMLEntities
 
   #
   # Decode entities in a string into their UTF-8
-  # equivalents.  Obviously, if your string is not already in UTF-8, you'd
-  # better convert it before using this method, or the output will be mixed
-  # up.
+  # equivalents. The string should already be in UTF-8 encoding.
   #
   # Unknown named entities will not be converted
   #
@@ -82,44 +80,49 @@ class HTMLEntities
   # contains valid UTF-8 before calling this method.
   #
   def encode(source, *instructions)
+    instructions << :basic if (instructions.empty?)
+    validate_instructions(instructions)
+
     string = source.to_s.dup
 
-    if (instructions.empty?)
-      instructions = [:basic]
-    elsif (unknown_instructions = instructions - INSTRUCTIONS) != []
-      raise InstructionError,
-      "unknown encode_entities command(s): #{unknown_instructions.inspect}"
+    memoized_basic_entity_encoder = basic_entity_encoder(instructions)
+    string.gsub!(basic_entity_regexp){ __send__(memoized_basic_entity_encoder, $&) }
+
+    memoized_extended_entity_encoders = extended_entity_encoders(instructions)
+    if memoized_extended_entity_encoders.any?
+      string.gsub!(extended_entity_regexp){ encode_extended(memoized_extended_entity_encoders, $&) }
     end
 
-    basic_entity_encoder =
-    if instructions.include?(:basic) || instructions.include?(:named)
-      :encode_named
-    elsif instructions.include?(:decimal)
-      :encode_decimal
-    else instructions.include?(:hexadecimal)
-      :encode_hexadecimal
-    end
-    string.gsub!(basic_entity_regexp){ __send__(basic_entity_encoder, $&) }
-
-    extended_entity_encoders = []
-    if instructions.include?(:named)
-      extended_entity_encoders << :encode_named
-    end
-    if instructions.include?(:decimal)
-      extended_entity_encoders << :encode_decimal
-    elsif instructions.include?(:hexadecimal)
-      extended_entity_encoders << :encode_hexadecimal
-    end
-    unless extended_entity_encoders.empty?
-      string.gsub!(extended_entity_regexp){
-        encode_extended(extended_entity_encoders, $&)
-      }
-    end
-
-    return string
+    string
   end
 
 private
+
+  def validate_instructions(instructions)
+    unknown_instructions = instructions - INSTRUCTIONS
+    if unknown_instructions.any?
+      raise InstructionError, "unknown encode_entities command(s): #{unknown_instructions.inspect}"
+    end
+
+    if (instructions.include?(:decimal) && instructions.include?(:hexadecimal))
+      raise InstructionError, "hexadecimal and decimal encoding are mutually exclusive"
+    end
+  end
+
+  def basic_entity_encoder(instructions)
+    return :encode_named       if instructions.include?(:basic) ||
+                                  instructions.include?(:named)
+    return :encode_decimal     if instructions.include?(:decimal)
+    return :encode_hexadecimal if instructions.include?(:hexadecimal)
+  end
+
+  def extended_entity_encoders(instructions)
+    acc = []
+    acc << :encode_named       if instructions.include?(:named)
+    acc << :encode_decimal     if instructions.include?(:decimal)
+    acc << :encode_hexadecimal if instructions.include?(:hexadecimal)
+    acc
+  end
 
   def map
     HTMLEntities::MAPPINGS[@flavor]
