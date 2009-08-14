@@ -15,7 +15,7 @@ Alternatively, you can just use the gem.
 
 This code is free to use under the terms of the MIT licence:
 
-  Copyright (c) 2007 Paul Battley
+  Copyright (c) 2005-2009 Paul Battley
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to

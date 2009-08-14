@@ -5,7 +5,7 @@ require "zlib"
 require "rake/clean"
 
 $:.unshift(File.dirname(__FILE__) + '/lib')
-require 'htmlentities'
+require 'htmlentities/version'
 
 CLEAN.include("doc")
 DOCTYPES = %w[html4 xhtml1]
@@ -16,11 +16,11 @@ task :default => :test
 
 spec = Gem::Specification.new do |s|
   s.name   = "htmlentities"
-  s.version = HTMLEntities::VERSION
+  s.version = HTMLEntities::VERSION::STRING
   s.author = "Paul Battley"
   s.email = "pbattley@gmail.com"
   s.summary = "A module for encoding and decoding (X)HTML entities."
-  s.files = FileList['{lib,test}/**/*.rb', 'setup.rb']
+  s.files = FileList['{lib,test}/**/*.rb']
   s.require_path = "lib"
   s.test_file = 'test/test_all.rb'
   s.has_rdoc = true
