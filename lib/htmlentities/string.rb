@@ -14,7 +14,7 @@ class String
   def decode_entities
     return HTMLEntities.decode_entities(self)
   end
-  
+
   #
   # Encode codepoints in a string into their corresponding entities. See
   # the documentation of HTMLEntities.encode_entities for a list of possible

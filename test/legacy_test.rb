@@ -9,7 +9,7 @@ $KCODE = 'u' unless "1.9".respond_to?(:encoding)
 # Test that version 3.x functionality still works
 #
 class HTMLEntities::LegacyTest < Test::Unit::TestCase
-  
+
   def test_should_decode_via_legacy_interface
     assert_decode('&', '&amp;')
     assert_decode('±', '&plusmn;')
@@ -23,7 +23,7 @@ class HTMLEntities::LegacyTest < Test::Unit::TestCase
     assert_encode('&#8230;', '…', :decimal)
     assert_encode('&#x2212;', '−', :hexadecimal)
   end
-  
+
   def assert_encode(expected, *encode_args)
     assert_equal expected, HTMLEntities.encode_entities(*encode_args)
   end
@@ -31,5 +31,5 @@ class HTMLEntities::LegacyTest < Test::Unit::TestCase
   def assert_decode(expected, *decode_args)
     assert_equal expected, HTMLEntities.decode_entities(*decode_args)
   end
-  
+
 end
