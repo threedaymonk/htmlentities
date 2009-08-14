@@ -1,6 +1,7 @@
 # encoding: UTF-8
 require 'htmlentities/legacy'
 require 'htmlentities/flavors'
+require 'htmlentities/version'
 
 #
 # HTML entity encoding and decoding for Ruby
