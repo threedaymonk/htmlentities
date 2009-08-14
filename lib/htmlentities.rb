@@ -5,16 +5,11 @@ require 'htmlentities/flavors'
 #
 # HTML entity encoding and decoding for Ruby
 #
-
 class HTMLEntities
-
-  VERSION = '4.0.0'
   INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal]
 
-  class InstructionError < RuntimeError
-  end
-  class UnknownFlavor < RuntimeError
-  end
+  InstructionError = Class.new(RuntimeError)
+  UnknownFlavor    = Class.new(RuntimeError)
 
   #
   # Create a new HTMLEntities coder for the specified flavor.
