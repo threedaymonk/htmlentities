@@ -143,7 +143,7 @@ private
       if encoding_aware?
         regexp = '[^\u{20}-\u{7E}]'
       else
-        regexp = '[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+'
+        regexp = '[^\x20-\x7E]'
       end
       regexp += "|'" if @flavor == 'html4'
       Regexp.new(regexp)
