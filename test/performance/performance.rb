@@ -4,6 +4,7 @@ $KCODE = 'u' unless "1.9".respond_to?(:encoding)
 $:.unshift(File.join(File.dirname(__FILE__), "..", "..", "lib"))
 require "htmlentities"
 require "benchmark"
+require "profiler"
 
 class HTMLEntitiesJob
   def initialize
@@ -26,3 +27,7 @@ job.run(100) # Warm up to give JRuby a fair shake.
 Benchmark.benchmark do |b|
   b.report{ job.run(100) }
 end
+
+Profiler__::start_profile
+job.run(1)
+Profiler__::print_profile($stdout)
