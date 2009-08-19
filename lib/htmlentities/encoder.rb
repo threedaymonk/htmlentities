@@ -6,7 +6,7 @@ class HTMLEntities
 
     def initialize(flavor, instructions)
       @flavor = flavor
-      instructions << :basic if (instructions.empty?)
+      instructions = [:basic] if instructions.empty?
       validate_instructions(instructions)
       build_basic_entity_encoder(instructions)
       build_extended_entity_encoder(instructions)
