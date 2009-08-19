@@ -155,7 +155,7 @@ private
       elsif instructions.include?(:hexadecimal)
         method = :encode_hexadecimal
       end
-      eval "def encode_basic(char)\n#{method}(char)\nend"
+      instance_eval "def encode_basic(char)\n#{method}(char)\nend"
     end
 
     def build_extended_entity_encoder(instructions)
@@ -166,7 +166,7 @@ private
       end
       definition << "char\n"
       definition << "end"
-      eval definition
+      instance_eval definition
     end
 
     def encode_named(char)
