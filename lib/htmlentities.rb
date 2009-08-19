@@ -76,50 +76,16 @@ class HTMLEntities
   # contains valid UTF-8 before calling this method.
   #
   def encode(source, *instructions)
-    instructions << :basic if (instructions.empty?)
-    validate_instructions(instructions)
-
     string = source.to_s.dup
+    e = Encoder.new(@flavor, instructions)
 
-    memoized_basic_entity_encoder = basic_entity_encoder(instructions)
-    string.gsub!(basic_entity_regexp){ __send__(memoized_basic_entity_encoder, $&) }
 
-    memoized_extended_entity_encoders = extended_entity_encoders(instructions)
-    if memoized_extended_entity_encoders.any?
-      string.gsub!(extended_entity_regexp){ encode_extended(memoized_extended_entity_encoders, $&) }
-    end
-
+    string.gsub!(basic_entity_regexp){ e.encode_basic($&) }
+    string.gsub!(extended_entity_regexp){ e.encode_extended($&) }
     string
   end
 
 private
-
-  def validate_instructions(instructions)
-    unknown_instructions = instructions - INSTRUCTIONS
-    if unknown_instructions.any?
-      raise InstructionError, "unknown encode_entities command(s): #{unknown_instructions.inspect}"
-    end
-
-    if (instructions.include?(:decimal) && instructions.include?(:hexadecimal))
-      raise InstructionError, "hexadecimal and decimal encoding are mutually exclusive"
-    end
-  end
-
-  def basic_entity_encoder(instructions)
-    return :encode_named       if instructions.include?(:basic) ||
-                                  instructions.include?(:named)
-    return :encode_decimal     if instructions.include?(:decimal)
-    return :encode_hexadecimal if instructions.include?(:hexadecimal)
-  end
-
-  def extended_entity_encoders(instructions)
-    acc = []
-    acc << :encode_named       if instructions.include?(:named)
-    acc << :encode_decimal     if instructions.include?(:decimal)
-    acc << :encode_hexadecimal if instructions.include?(:hexadecimal)
-    acc
-  end
-
   def map
     @map ||= HTMLEntities::MAPPINGS[@flavor]
   end
@@ -156,38 +122,73 @@ private
     )
   end
 
-  def reverse_map_skipping_dups
-    skips = HTMLEntities::SKIP_DUP_ENCODINGS[@flavor]
-    uniqmap = skips ? map.reject{|ent,hx| skips.include? ent} : map
-    uniqmap.invert
-  end
-
-  def reverse_map
-    @reverse_map ||= reverse_map_skipping_dups
-  end
-
-  def encode_named(char)
-    cp = char.unpack('U')[0]
-    (e = reverse_map[cp]) && "&#{e};"
-  end
-
-  def encode_decimal(char)
-    "&##{char.unpack('U')[0]};"
-  end
-
-  def encode_hexadecimal(char)
-    "&#x#{char.unpack('U')[0].to_s(16)};"
-  end
-
-  def encode_extended(encoders, char)
-    encoders.each do |encoder|
-      encoded = __send__(encoder, char)
-      return encoded if encoded
-    end
-    return char
-  end
-
   def encoding_aware?
     "1.9".respond_to?(:encoding)
+  end
+
+  class Encoder
+    def initialize(flavor, instructions)
+      @flavor = flavor
+      instructions << :basic if (instructions.empty?)
+      validate_instructions(instructions)
+      build_basic_entity_encoder(instructions)
+      build_extended_entity_encoder(instructions)
+    end
+
+  private
+    def validate_instructions(instructions)
+      unknown_instructions = instructions - INSTRUCTIONS
+      if unknown_instructions.any?
+        raise InstructionError, "unknown encode_entities command(s): #{unknown_instructions.inspect}"
+      end
+
+      if (instructions.include?(:decimal) && instructions.include?(:hexadecimal))
+        raise InstructionError, "hexadecimal and decimal encoding are mutually exclusive"
+      end
+    end
+
+    def build_basic_entity_encoder(instructions)
+      if instructions.include?(:basic) || instructions.include?(:named)
+        method = :encode_named
+      elsif instructions.include?(:decimal)
+        method = :encode_decimal
+      elsif instructions.include?(:hexadecimal)
+        method = :encode_hexadecimal
+      end
+      eval "def encode_basic(char)\n#{method}(char)\nend"
+    end
+
+    def build_extended_entity_encoder(instructions)
+      definition = "def encode_extended(char)\n"
+      ([:named, :decimal, :hexadecimal] & instructions).each do |encoder|
+        definition << "encoded = encode_#{encoder}(char)\n"
+        definition << "return encoded if encoded\n"
+      end
+      definition << "char\n"
+      definition << "end"
+      eval definition
+    end
+
+    def encode_named(char)
+      cp = char.unpack('U')[0]
+      (e = reverse_map[cp]) && "&#{e};"
+    end
+
+    def encode_decimal(char)
+      "&##{char.unpack('U')[0]};"
+    end
+
+    def encode_hexadecimal(char)
+      "&#x#{char.unpack('U')[0].to_s(16)};"
+    end
+
+    def reverse_map
+      @reverse_map ||= (
+        skips = HTMLEntities::SKIP_DUP_ENCODINGS[@flavor]
+        map = HTMLEntities::MAPPINGS[@flavor]
+        uniqmap = skips ? map.reject{|ent,hx| skips.include? ent} : map
+        uniqmap.invert
+      )
+    end
   end
 end
