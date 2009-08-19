@@ -19,10 +19,9 @@ class HTMLEntities
 
     def named_entity_regexp
       @named_entity_regexp ||= (
-        min_length = map.keys.map{ |a| a.length }.min
-        max_length = map.keys.map{ |a| a.length }.max
+        key_lengths = map.keys.map{ |k| k.length }
         ok_chars = @flavor.to_s == 'expanded' ? '(?:b\.)?[a-z][a-z0-9]' : '[a-z][a-z0-9]'
-        /&(#{ok_chars}{#{min_length-1},#{max_length-1}});/i
+        /&(#{ ok_chars }{#{ key_lengths.min - 1 },#{ key_lengths.max - 1 }});/i
       )
     end
   end
