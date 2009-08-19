@@ -121,7 +121,7 @@ private
   end
 
   def map
-    HTMLEntities::MAPPINGS[@flavor]
+    @map ||= HTMLEntities::MAPPINGS[@flavor]
   end
 
   def basic_entity_regexp
