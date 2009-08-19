@@ -9,9 +9,6 @@ require 'htmlentities/version'
 # HTML entity encoding and decoding for Ruby
 #
 class HTMLEntities
-  INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal]
-
-  InstructionError = Class.new(RuntimeError)
   UnknownFlavor    = Class.new(RuntimeError)
 
   #

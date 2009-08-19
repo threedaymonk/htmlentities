@@ -1,5 +1,9 @@
 class HTMLEntities
+  InstructionError = Class.new(RuntimeError)
+
   class Encoder #:nodoc:
+    INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal]
+
     def initialize(flavor, instructions)
       @flavor = flavor
       instructions << :basic if (instructions.empty?)
