@@ -76,41 +76,13 @@ class HTMLEntities
   # contains valid UTF-8 before calling this method.
   #
   def encode(source, *instructions)
-    string = source.to_s.dup
-    e = Encoder.new(@flavor, instructions)
-
-
-    string.gsub!(basic_entity_regexp){ e.encode_basic($&) }
-    string.gsub!(extended_entity_regexp){ e.encode_extended($&) }
-    string
+    encoder = Encoder.new(@flavor, instructions)
+    encoder.encode(source)
   end
 
 private
   def map
     @map ||= HTMLEntities::MAPPINGS[@flavor]
-  end
-
-  def basic_entity_regexp
-    @basic_entity_regexp ||= (
-      case @flavor
-      when /^html/
-        /[<>"&]/
-      else
-        /[<>'"&]/
-      end
-    )
-  end
-
-  def extended_entity_regexp
-    @extended_entity_regexp ||= (
-      if encoding_aware?
-        regexp = '[^\u{20}-\u{7E}]'
-      else
-        regexp = '[^\x20-\x7E]'
-      end
-      regexp += "|'" if @flavor == 'html4'
-      Regexp.new(regexp)
-    )
   end
 
   def named_entity_regexp
@@ -122,11 +94,7 @@ private
     )
   end
 
-  def encoding_aware?
-    "1.9".respond_to?(:encoding)
-  end
-
-  class Encoder
+  class Encoder #:nodoc:
     def initialize(flavor, instructions)
       @flavor = flavor
       instructions << :basic if (instructions.empty?)
@@ -135,7 +103,37 @@ private
       build_extended_entity_encoder(instructions)
     end
 
+    def encode(source)
+      string = source.to_s.dup
+      string.gsub!(basic_entity_regexp){ encode_basic($&) }
+      string.gsub!(extended_entity_regexp){ encode_extended($&) }
+      string
+    end
+
   private
+    def basic_entity_regexp
+      @basic_entity_regexp ||= (
+        case @flavor
+        when /^html/
+          /[<>"&]/
+        else
+          /[<>'"&]/
+        end
+      )
+    end
+
+    def extended_entity_regexp
+      @extended_entity_regexp ||= (
+        if encoding_aware?
+          regexp = '[^\u{20}-\u{7E}]'
+        else
+          regexp = '[^\x20-\x7E]'
+        end
+        regexp += "|'" if @flavor == 'html4'
+        Regexp.new(regexp)
+      )
+    end
+
     def validate_instructions(instructions)
       unknown_instructions = instructions - INSTRUCTIONS
       if unknown_instructions.any?
@@ -189,6 +187,10 @@ private
         uniqmap = skips ? map.reject{|ent,hx| skips.include? ent} : map
         uniqmap.invert
       )
+    end
+
+    def encoding_aware?
+      "1.9".respond_to?(:encoding)
     end
   end
 end
