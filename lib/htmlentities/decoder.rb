@@ -16,7 +16,7 @@ class HTMLEntities
   private
     def named_entity_regexp
       key_lengths = @map.keys.map{ |k| k.length }
-      ok_chars = @flavor.to_s == 'expanded' ? '(?:b\.)?[a-z][a-z0-9]' : '[a-z][a-z0-9]'
+      ok_chars = @flavor == 'expanded' ? '(?:b\.)?[a-z][a-z0-9]' : '[a-z][a-z0-9]'
       /&(#{ ok_chars }{#{ key_lengths.min - 1 },#{ key_lengths.max - 1 }});/i
     end
   end
