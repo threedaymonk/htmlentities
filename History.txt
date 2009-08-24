@@ -1,3 +1,6 @@
+== 4.2.0 (2009-08-24)
+* Added benchmarking code and improved performance.
+
 == 4.1.0 (2009-08-15)
 * Now works with Ruby 1.9.1 and JRuby.
 * Reverted lazy loading of entity mappings as this is not thread-safe.
