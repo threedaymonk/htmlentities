@@ -9,7 +9,7 @@ require 'htmlentities/version'
 # HTML entity encoding and decoding for Ruby
 #
 class HTMLEntities
-  UnknownFlavor    = Class.new(RuntimeError)
+  UnknownFlavor = Class.new(RuntimeError)
 
   #
   # Create a new HTMLEntities coder for the specified flavor.
