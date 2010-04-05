@@ -1,3 +1,7 @@
+== 4.2.1 (2010-04-05)
+* Fixed error on Ruby 1.8.x when $KCODE was not set to "UTF8". Thanks to
+  Benoit Larroque for the bug report.
+
 == 4.2.0 (2009-08-24)
 * Added benchmarking code and improved performance.
 
