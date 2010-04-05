@@ -182,6 +182,18 @@ class HTMLEntities::EntitiesTest < Test::Unit::TestCase
     assert_decode([948].pack('U'), '&delta;')
   end
 
+  if RUBY_VERSION =~ /^1\.8\./
+    # Reported by Benoit Larroque
+    def test_should_encode_without_error_when_KCODE_is_not_UTF_8
+      kcode = $KCODE
+      $KCODE = "n"
+      coder = HTMLEntities.new;
+      text = [8212].pack('U')
+      assert_equal "&#8212;", coder.encode(text, :decimal)
+      $KCODE = kcode
+    end
+  end
+
   def test_should_ducktype_parameter_to_string_before_encoding
     pseudo_string = PseudoString.new('foo')
     assert_decode('foo', pseudo_string)
