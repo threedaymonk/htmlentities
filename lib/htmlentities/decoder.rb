@@ -3,10 +3,11 @@ class HTMLEntities
     def initialize(flavor)
       @flavor = flavor
       @map = HTMLEntities::MAPPINGS[@flavor]
+      @n_e_r = named_entity_regexp
     end
 
     def decode(source)
-      source.to_s.gsub(named_entity_regexp) {
+      source.to_s.gsub(@n_e_r) {
         (cp = @map[$1]) ? [cp].pack('U') : $&
       }.gsub(/&#(?:([0-9]{1,7})|x([0-9a-f]{1,6}));/i) {
         $1 ? [$1.to_i].pack('U') : [$2.to_i(16)].pack('U')
