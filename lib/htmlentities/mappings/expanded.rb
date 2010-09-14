@@ -47,6 +47,7 @@ class HTMLEntities
     'aacute'         => 0x00e1,   # á       xhtml      LATIN SMALL LETTER A WITH ACUTE
     'Abreve'         => 0x0102,   # Ă                  LATIN CAPITAL LETTER A WITH BREVE
     'abreve'         => 0x0103,   # ă                  LATIN SMALL LETTER A WITH BREVE
+    'acaron'         => 0x01ce,   # ǎ                  LATIN SMALL LETTER A WITH CARON
     'Acirc'          => 0x00c2,   # Â       xhtml      LATIN CAPITAL LETTER A WITH CIRCUMFLEX
     'acirc'          => 0x00e2,   # â       xhtml      LATIN SMALL LETTER A WITH CIRCUMFLEX
     'acute'          => 0x00b4,   # ´       xhtml      ACUTE ACCENT
@@ -76,6 +77,7 @@ class HTMLEntities
     'aogon'          => 0x0105,   # ą                  LATIN SMALL LETTER A WITH OGONEK
     'ap'             => 0x2248,   # ≈   dup       skip ALMOST EQUAL TO
     'ape'            => 0x224a,   # ≊                  ALMOST EQUAL OR EQUAL TO
+    'apolhook'       => 0x0105,   # ą                  LATIN SMALL LETTER A WITH OGONEK
     'apos'           => 0x0027,   # '       xhtml      MODIFIER LETTER APOSTROPHE
     'Aring'          => 0x00c5,   # Å       xhtml      LATIN CAPITAL LETTER A WITH RING ABOVE
     'aring'          => 0x00e5,   # å       xhtml      LATIN SMALL LETTER A WITH RING ABOVE
@@ -223,6 +225,7 @@ class HTMLEntities
     'circ'           => 0x02c6,   # ˆ       xhtml      MODIFIER LETTER CIRCUMFLEX ACCENT
     'cire'           => 0x2257,   # ≗                  RING EQUAL TO
     'clubs'          => 0x2663,   # ♣       xhtml      BLACK CLUB SUIT
+    'Codot'          => 0x010a,   # Ċ                  LATIN CAPITAL LETTER C WITH DOT ABOVE
     'colon'          => 0x003a,   # :                  COLON
     'colone'         => 0x2254,   # ≔                  COLON EQUALS
     'comma'          => 0x002c,   # ,                  COMMA
@@ -257,6 +260,7 @@ class HTMLEntities
     'dblac'          => 0x02dd,   # ˝                  DOUBLE ACUTE ACCENT
     'Dcaron'         => 0x010e,   # Ď                  LATIN CAPITAL LETTER D WITH CARON
     'dcaron'         => 0x010f,   # ď                  LATIN SMALL LETTER D WITH CARON
+    'dcross'         => 0x0111,   # đ	                 LATIN SMALL LETTER D WITH STROKE
     'Dcy'            => 0x0414,   # Д                  CYRILLIC CAPITAL LETTER DE
     'dcy'            => 0x0434,   # д                  CYRILLIC SMALL LETTER DE
     'deg'            => 0x00b0,   # °       xhtml      DEGREE SIGN
@@ -287,6 +291,7 @@ class HTMLEntities
     'dscy'           => 0x0455,   # ѕ                  CYRILLIC SMALL LETTER DZE
     'Dstrok'         => 0x0110,   # Đ                  LATIN CAPITAL LETTER D WITH STROKE
     'dstrok'         => 0x0111,   # đ                  LATIN SMALL LETTER D WITH STROKE
+    'dsubdot'        => 0x1e0d,   # ḍ                  LATIN SMALL LETTER D WITH DOT BELOW
     'dtri'           => 0x25bf,   # ▿                  WHITE DOWN-POINTING SMALL TRIANGLE
     'dtrif'          => 0x25be,   # ▾                  BLACK DOWN-POINTING SMALL TRIANGLE
     'DZcy'           => 0x040f,   # Џ                  CYRILLIC CAPITAL LETTER DZHE
@@ -329,6 +334,7 @@ class HTMLEntities
     'ensp'           => 0x2002,   #         xhtml      EN SPACE
     'Eogon'          => 0x0118,   # Ę                  LATIN CAPITAL LETTER E WITH OGONEK
     'eogon'          => 0x0119,   # ę                  LATIN SMALL LETTER E WITH OGONEK
+    'epolhook'       => 0x0119,   # ę                  LATIN SMALL LETTER E WITH OGONEK
     'epsi'           => 0x03b5,   # ε   dup       skip GREEK SMALL LETTER EPSILON
     'Epsilon'        => 0x0395,   # Ε   dup xhtml      GREEK CAPITAL LETTER EPSILON
     'epsilon'        => 0x03b5,   # ε   dup xhtml      GREEK SMALL LETTER EPSILON
@@ -402,6 +408,7 @@ class HTMLEntities
     'gnE'            => 0x2269,   # ≩   dup            GREATER-THAN BUT NOT EQUAL TO
     'gne'            => 0x2269,   # ≩   dup       skip GREATER-THAN BUT NOT EQUAL TO
     'gnsim'          => 0x22e7,   # ⋧                  GREATER-THAN BUT NOT EQUIVALENT TO
+    'godot'          => 0x0121,   # ġ                  LATIN SMALL LETTER G WITH DOT ABOVE
     'grave'          => 0x0060,   # `                  GRAVE ACCENT
     'gsdot'          => 0x22d7,   # ⋗                  GREATER-THAN WITH DOT
     'gsim'           => 0x2273,   # ≳                  GREATER-THAN OR EQUIVALENT TO
@@ -423,6 +430,8 @@ class HTMLEntities
     'horbar'         => 0x2015,   # ―                  HORIZONTAL BAR
     'Hstrok'         => 0x0126,   # Ħ                  LATIN CAPITAL LETTER H WITH STROKE
     'hstrok'         => 0x0127,   # ħ                  LATIN SMALL LETTER H WITH STROKE
+    'Hsubdot'        => 0x1e25,   # Ḥ                  LATIN CAPITAL LETTER H WITH DOT BELOW
+    'hsubdot'        => 0x1e25,   # ḥ                  LATIN SMALL LETTER H WITH DOT BELOW
     'hybull'         => 0x2043,   # ⁃                  HYPHEN BULLET
     'hyphen'         => 0x002d,   # -                  HYPHEN-MINUS
     'Iacgr'          => 0x038a,   # Ί                  GREEK CAPITAL LETTER IOTA WITH TONOS
@@ -437,6 +446,7 @@ class HTMLEntities
     'Idigr'          => 0x03aa,   # Ϊ                  GREEK CAPITAL LETTER IOTA WITH DIALYTIKA
     'idigr'          => 0x03ca,   # ϊ                  GREEK SMALL LETTER IOTA WITH DIALYTIKA
     'Idot'           => 0x0130,   # İ                  LATIN CAPITAL LETTER I WITH DOT ABOVE
+    'idotless'       => 0x0131,   # ı                  LATIN SMALL LETTER DOTLESS I
     'IEcy'           => 0x0415,   # Е                  CYRILLIC CAPITAL LETTER IE
     'iecy'           => 0x0435,   # е                  CYRILLIC SMALL LETTER IE
     'iexcl'          => 0x00a1,   # ¡       xhtml      INVERTED EXCLAMATION MARK
@@ -458,6 +468,7 @@ class HTMLEntities
     'intcal'         => 0x22ba,   # ⊺                  INTERCALATE
     'IOcy'           => 0x0401,   # Ё                  CYRILLIC CAPITAL LETTER IO
     'iocy'           => 0x0451,   # ё                  CYRILLIC SMALL LETTER IO
+    'Iodot'          => 0x0130,   # İ                  LATIN CAPITAL LETTER I WITH DOT ABOVE
     'Iogon'          => 0x012e,   # Į                  LATIN CAPITAL LETTER I WITH OGONEK
     'iogon'          => 0x012f,   # į                  LATIN SMALL LETTER I WITH OGONEK
     'Iota'           => 0x0399,   # Ι   dup xhtml      GREEK CAPITAL LETTER IOTA
@@ -494,6 +505,7 @@ class HTMLEntities
     'khgr'           => 0x03c7,   # χ   dup       skip GREEK SMALL LETTER CHI
     'KJcy'           => 0x040c,   # Ќ                  CYRILLIC CAPITAL LETTER KJE
     'kjcy'           => 0x045c,   # ќ                  CYRILLIC SMALL LETTER KJE
+    'ksubdot'        => 0x1e33,   # ḳ	                 LATIN SMALL LETTER K WITH DOT BELOW
     'lAarr'          => 0x21da,   # ⇚                  LEFTWARDS TRIPLE ARROW
     'Lacute'         => 0x0139,   # Ĺ                  LATIN CAPITAL LETTER L WITH ACUTE
     'lacute'         => 0x013a,   # ĺ                  LATIN SMALL LETTER L WITH ACUTE
@@ -550,6 +562,8 @@ class HTMLEntities
     'lsaquo'         => 0x2039,   # ‹       xhtml      SINGLE LEFT-POINTING ANGLE QUOTATION MARK
     'lsh'            => 0x21b0,   # ↰                  UPWARDS ARROW WITH TIP LEFTWARDS
     'lsim'           => 0x2272,   # ≲                  LESS-THAN OR EQUIVALENT TO
+    'Lslash'         => 0x0141,   # Ł                  LATIN CAPITAL LETTER L WITH STROKE
+    'lslash'         => 0x0142,   # ł                  LATIN SMALL LETTER L WITH STROKE
     'lsqb'           => 0x005b,   # [                  LEFT SQUARE BRACKET
     'lsquo'          => 0x2018,   # ‘   dup xhtml      LEFT SINGLE QUOTATION MARK
     'lsquor'         => 0x201a,   # ‚   dup       skip SINGLE LOW-9 QUOTATION MARK
@@ -581,6 +595,7 @@ class HTMLEntities
     'mldr'           => 0x2026,   # …   dup       skip HORIZONTAL ELLIPSIS
     'mnplus'         => 0x2213,   # ∓                  MINUS-OR-PLUS SIGN
     'models'         => 0x22a7,   # ⊧                  MODELS
+    'msubdot'        => 0x1e43,   # ṃ                  LATIN SMALL LETTER M WITH DOT BELOW
     'Mu'             => 0x039c,   # Μ   dup xhtml      GREEK CAPITAL LETTER MU
     'mu'             => 0x03bc,   # μ   dup xhtml      GREEK SMALL LETTER MU
     'mumap'          => 0x22b8,   # ⊸                  MULTIMAP
@@ -622,6 +637,7 @@ class HTMLEntities
     'nltri'          => 0x22ea,   # ⋪                  NOT NORMAL SUBGROUP OF
     'nltrie'         => 0x22ec,   # ⋬                  NOT NORMAL SUBGROUP OF OR EQUAL TO
     'nmid'           => 0x2224,   # ∤                  DOES NOT DIVIDE
+    'nodot'          => 0x1e45,   # ṅ                  LATIN SMALL LETTER N WITH DOT ABOVE
     'not'            => 0x00ac,   # ¬       xhtml      NOT SIGN
     'notin'          => 0x2209,   # ∉       xhtml      NOT AN ELEMENT OF
     'npar'           => 0x2226,   # ∦   dup            NOT PARALLEL TO
@@ -637,6 +653,7 @@ class HTMLEntities
     'nsime'          => 0x2244,   # ≄                  NOT ASYMPTOTICALLY EQUAL TO
     'nspar'          => 0x2226,   # ∦   dup       skip NOT PARALLEL TO
     'nsub'           => 0x2284,   # ⊄       xhtml      NOT A SUBSET OF
+    'nsubdot'        => 0x1e47,   # ṇ                  LATIN SMALL LETTER N WITH DOT BELOW
     'nsubE'          => 0x2288,   # ⊈   dup            NEITHER A SUBSET OF NOR EQUAL TO
     'nsube'          => 0x2288,   # ⊈   dup       skip NEITHER A SUBSET OF NOR EQUAL TO
     'nsup'           => 0x2285,   # ⊅                  NOT A SUPERSET OF
@@ -792,6 +809,8 @@ class HTMLEntities
     'rsqb'           => 0x005d,   # ]                  RIGHT SQUARE BRACKET
     'rsquo'          => 0x2019,   # ’       xhtml      RIGHT SINGLE QUOTATION MARK
     'rsquor'         => 0x2018,   # ‘   dup       skip LEFT SINGLE QUOTATION MARK
+    'Rsubdot'        => 0x1e5a,   # Ṛ                  LATIN CAPITAL LETTER R WITH DOT BELOW
+    'rsubdot'        => 0x1e5b,   # ṛ                  LATIN SMALL LETTER R WITH DOT BELOW
     'rthree'         => 0x22cc,   # ⋌                  RIGHT SEMIDIRECT PRODUCT
     'rtimes'         => 0x22ca,   # ⋊                  RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT
     'rtri'           => 0x25b9,   # ▹                  WHITE RIGHT-POINTING SMALL TRIANGLE
@@ -856,6 +875,7 @@ class HTMLEntities
     'ssetmn'         => 0x2216,   # ∖   dup       skip SET MINUS
     'ssmile'         => 0x2323,   # ⌣   dup       skip SMILE
     'sstarf'         => 0x22c6,   # ⋆                  STAR OPERATOR
+    'ssubdot'        => 0x1e63,   # ṣ                  LATIN SMALL LETTER S WITH DOT BELOW
     'star'           => 0x2606,   # ☆                  WHITE STAR
     'starf'          => 0x2605,   # ★                  BLACK STAR
     'sub'            => 0x2282,   # ⊂       xhtml      SUBSET OF
@@ -915,6 +935,7 @@ class HTMLEntities
     'tshcy'          => 0x045b,   # ћ                  CYRILLIC SMALL LETTER TSHE
     'Tstrok'         => 0x0166,   # Ŧ                  LATIN CAPITAL LETTER T WITH STROKE
     'tstrok'         => 0x0167,   # ŧ                  LATIN SMALL LETTER T WITH STROKE
+    'tsubdot'        => 0x1e6d,   # ṭ                  LATIN SMALL LETTER T WITH DOT BELOW
     'twixt'          => 0x226c,   # ≬                  BETWEEN
     'Uacgr'          => 0x038e,   # Ύ                  GREEK CAPITAL LETTER UPSILON WITH TONOS
     'uacgr'          => 0x03cd,   # ύ                  GREEK SMALL LETTER UPSILON WITH TONOS
@@ -1031,6 +1052,10 @@ class HTMLEntities
     'zgr'            => 0x03b6,   # ζ   dup       skip GREEK SMALL LETTER ZETA
     'ZHcy'           => 0x0416,   # Ж                  CYRILLIC CAPITAL LETTER ZHE
     'zhcy'           => 0x0436,   # ж                  CYRILLIC SMALL LETTER ZHE
+    'Zodot'          => 0x017b,   # Ż                  LATIN CAPITAL LETTER Z WITH DOT ABOVE
+    'zodot'          => 0x017c,   # ż                  LATIN SMALL LETTER Z WITH DOT ABOVE
+    'Zsubdot'        => 0x1e92,   # Ẓ                  LATIN CAPITAL LETTER Z WITH DOT BELOW
+    'zsubdot'        => 0x1e93,   # ẓ                  LATIN SMALL LETTER Z WITH DOT BELOW
     'zwj'            => 0x200d,   # ‍       xhtml      ZERO WIDTH JOINER
     'zwnj'           => 0x200c,   # ‌       xhtml      ZERO WIDTH NON-JOINER
     'euro'           => 0x20ac,   # €       xhtml      EURO SIGN
