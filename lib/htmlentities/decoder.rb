@@ -7,10 +7,14 @@ class HTMLEntities
     end
 
     def decode(source)
-      source.to_s.gsub(@named_entity_regexp) {
-        (codepoint = @map[$1]) ? [codepoint].pack('U') : $&
-      }.gsub(/&#(?:([0-9]{1,7})|x([0-9a-f]{1,6}));/i) {
-        $1 ? [$1.to_i].pack('U') : [$2.to_i(16)].pack('U')
+      source.to_s.gsub(/#{@named_entity_regexp}|&#(?:([0-9]{1,7})|x([0-9a-f]{1,6}));/i) {
+        if $1
+          (codepoint = @map[$1]) ? [codepoint].pack('U') : $&
+        elsif $2
+          [$2.to_i].pack('U')
+        else
+          [$3.to_i(16)].pack('U')
+        end
       }
     end
 

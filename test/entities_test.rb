@@ -194,6 +194,13 @@ class HTMLEntities::EntitiesTest < Test::Unit::TestCase
     end
   end
 
+  # Reported by ckruse
+  def test_should_decode_only_first_element_in_masked_entities
+    input = '&amp;#3346;'
+    expected = '&#3346;'
+    assert_decode expected, input
+  end
+
   def test_should_ducktype_parameter_to_string_before_encoding
     pseudo_string = PseudoString.new('foo')
     assert_decode('foo', pseudo_string)
