@@ -8,10 +8,10 @@ class HTMLEntities
 
     def decode(source)
       source.to_s.gsub(@named_entity_regexp) {
-        (codepoint = @map[$1]) ? [codepoint].pack('U') : $&
+        (codepoint = @map[$1] && $1 != 'amp') ? [codepoint].pack('U') : $&
       }.gsub(/&#(?:([0-9]{1,7})|x([0-9a-f]{1,6}));/i) {
         $1 ? [$1.to_i].pack('U') : [$2.to_i(16)].pack('U')
-      }
+      }.gsub(/&amp;/,'&')
     end
 
   private
