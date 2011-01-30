@@ -3,23 +3,25 @@ class HTMLEntities
     def initialize(flavor)
       @flavor = flavor
       @map = HTMLEntities::MAPPINGS[@flavor]
-      @named_entity_regexp = named_entity_regexp
+      @entity_regexp = entity_regexp
     end
 
     def decode(source)
-      source.to_s.gsub(/#{@named_entity_regexp}|&#(?:([0-9]{1,7})|x([0-9a-f]{1,6}));/i) {
-        if $1
-          (codepoint = @map[$1]) ? [codepoint].pack('U') : $&
+      source.to_s.gsub(@entity_regexp) {
+        if $1 && codepoint = @map[$1]
+          [codepoint].pack('U')
         elsif $2
-          [$2.to_i].pack('U')
-        else
+          [$2.to_i(10)].pack('U')
+        elsif $3
           [$3.to_i(16)].pack('U')
+        else
+          $&
         end
       }
     end
 
   private
-    def named_entity_regexp
+    def entity_regexp
       key_lengths = @map.keys.map{ |k| k.length }
       entity_name_pattern =
         if @flavor == 'expanded'
@@ -27,7 +29,7 @@ class HTMLEntities
         else
           '[a-z][a-z0-9]'
         end
-      /&(#{ entity_name_pattern }{#{ key_lengths.min - 1 },#{ key_lengths.max - 1 }});/i
+      /&(?:(#{entity_name_pattern}{#{key_lengths.min - 1},#{key_lengths.max - 1}})|#([0-9]{1,7})|#x([0-9a-f]{1,6}));/i
     end
   end
 end
