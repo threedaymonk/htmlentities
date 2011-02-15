@@ -33,15 +33,15 @@ class HTMLEntities
 
     def extended_entity_regexp
       @extended_entity_regexp ||= (
-        regexp_options = [nil]
+        options = [nil]
         if encoding_aware?
-          regexp = '[^\u{20}-\u{7E}]'
+          pattern = '[^\u{20}-\u{7E}]'
         else
-          regexp = '[^\x20-\x7E]'
-          regexp_options << "U"
+          pattern = '[^\x20-\x7E]'
+          options << "U"
         end
-        regexp += "|'" if @flavor == 'html4'
-        Regexp.new(regexp, *regexp_options)
+        pattern << "|'" if @flavor == 'html4'
+        Regexp.new(pattern, *options)
       )
     end
 
