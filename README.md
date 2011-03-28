@@ -51,7 +51,7 @@ As above, using hexadecimal entities:
 
     coder.encode(string, :hexadecimal) # => "&#x3c;&#xe9;lan&#x3e;"
 
-You can also use several options, e.g. use named entitied for unsafe codepoints, then decimal for all other non-ASCII:
+You can also use several options, e.g. use named entities for unsafe codepoints, then decimal for all other non-ASCII:
 
     coder.encode(string, :basic, :decimal) # => "&lt;&#233;lan&gt;"
 
