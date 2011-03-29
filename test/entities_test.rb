@@ -103,6 +103,22 @@ class HTMLEntities::EntitiesTest < Test::Unit::TestCase
     assert_encode('&#x2014;', '—', :hexadecimal)
   end
 
+  def test_should_not_mutate_string_being_encoded
+    original = "<£"
+    input = original.dup
+    HTMLEntities.new.encode(input, :basic, :decimal)
+
+    assert_equal original, input
+  end
+
+  def test_should_not_mutate_string_being_decoded
+    original = "&lt;&#163;"
+    input = original.dup
+    HTMLEntities.new.decode(input)
+
+    assert_equal original, input
+  end
+
   def test_should_decode_text_with_mix_of_entities
     # Just a random headline - I needed something with accented letters.
     assert_decode(
