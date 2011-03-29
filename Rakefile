@@ -6,33 +6,12 @@ DOCTYPES = %w[html4 xhtml1]
 DATA_FILES = DOCTYPES.map{ |d| "lib/htmlentities/#{d}.rb" }
 SOURCES = FileList["lib/**/*.rb"] - DATA_FILES
 
-def interpreters
-  path = ENV["PATH"].split(":")
-  Dir["{" + path * "," + "}/*ruby*"].
-  select{ |path| File.basename(path) =~ /^j?ruby([\d\.]*)$/ }.
-  inject({}){ |hash, path|
-    version = `"#{path}" --version`
-    hash[version] = path if version =~ /ruby/i
-    hash
-  }
-end
-
 task :default => :test
 
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.test_files = FileList['test/*_test.rb']
   t.verbose = true
-end
-
-namespace :test do
-  desc "Run tests with all available Ruby interpreters"
-  task :versions do |t|
-    interpreters.each do |version, path|
-      puts version
-      system path, "test/test_all.rb"
-    end
-  end
 end
 
 DOCTYPES.each do |name|
@@ -48,15 +27,14 @@ end
 
 task :entities => DATA_FILES
 
-desc "Run benchmark with all available Ruby interpreters"
+desc "Run benchmark"
 task :benchmark do |t|
-  interpreters.each do |version, path|
-    puts version
-    system path, "perf/benchmark.rb"
-  end
+  system "ruby -v"
+  system "ruby perf/benchmark.rb"
 end
 
 desc "Use profiler to analyse encoding and decoding"
 task :profile do |t|
-  system "ruby", "perf/profile.rb"
+  system "ruby -v"
+  system "ruby perf/profile.rb"
 end
