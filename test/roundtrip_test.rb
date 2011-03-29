@@ -11,74 +11,50 @@ class HTMLEntities::RoundtripTest < Test::Unit::TestCase
   end
 
   def test_should_roundtrip_xhtml1_entities_via_named_encoding
-    each_mapping('xhtml1') do |name, string|
-      assert_equal(
-        string,
-        xhtml1_entities.decode(xhtml1_entities.encode(string, :named))
-      )
+    each_mapping 'xhtml1' do |name, string|
+      assert_equal string, xhtml1_entities.decode(xhtml1_entities.encode(string, :named))
     end
   end
 
   def test_should_roundtrip_xhtml1_entities_via_basic_and_named_encoding
-    each_mapping('xhtml1') do |name, string|
-      assert_equal(
-        string,
-        xhtml1_entities.decode(xhtml1_entities.encode(string, :basic, :named))
-      )
+    each_mapping 'xhtml1' do |name, string|
+      assert_equal string, xhtml1_entities.decode(xhtml1_entities.encode(string, :basic, :named))
     end
   end
 
   def test_should_roundtrip_xhtml1_entities_via_basic_named_and_decimal_encoding
-    each_mapping('xhtml1') do |name, string|
-      assert_equal(
-        string,
-        xhtml1_entities.decode(xhtml1_entities.encode(string, :basic, :named, :decimal))
-      )
+    each_mapping 'xhtml1' do |name, string|
+      assert_equal string, xhtml1_entities.decode(xhtml1_entities.encode(string, :basic, :named, :decimal))
     end
   end
 
   def test_should_roundtrip_xhtml1_entities_via_hexadecimal_encoding
-    each_mapping('xhtml1') do |name, string|
-      assert_equal(
-        string,
-        xhtml1_entities.decode(xhtml1_entities.encode(string, :hexadecimal))
-      )
+    each_mapping 'xhtml1' do |name, string|
+      assert_equal string, xhtml1_entities.decode(xhtml1_entities.encode(string, :hexadecimal))
     end
   end
 
   def test_should_roundtrip_html4_entities_via_named_encoding
-    each_mapping('html4') do |name, string|
-      assert_equal(
-        string,
-        html4_entities.decode(html4_entities.encode(string, :named))
-      )
+    each_mapping 'html4' do |name, string|
+      assert_equal string, html4_entities.decode(html4_entities.encode(string, :named))
     end
   end
 
   def test_should_roundtrip_html4_entities_via_basic_and_named_encoding
-    each_mapping('html4') do |name, string|
-      assert_equal(
-        string,
-        html4_entities.decode(html4_entities.encode(string, :basic, :named))
-      )
+    each_mapping 'html4' do |name, string|
+      assert_equal string, html4_entities.decode(html4_entities.encode(string, :basic, :named))
     end
   end
 
   def test_should_roundtrip_html4_entities_via_basic_named_and_decimal_encoding
-    each_mapping('html4') do |name, string|
-      assert_equal(
-        string,
-        html4_entities.decode(html4_entities.encode(string, :basic, :named, :decimal))
-      )
+    each_mapping 'html4' do |name, string|
+      assert_equal string, html4_entities.decode(html4_entities.encode(string, :basic, :named, :decimal))
     end
   end
 
   def test_should_roundtrip_html4_entities_via_hexadecimal_encoding
-    each_mapping('html4') do |name, string|
-      assert_equal(
-        string,
-        html4_entities.decode(html4_entities.encode(string, :hexadecimal))
-      )
+    each_mapping 'html4' do |name, string|
+      assert_equal string, html4_entities.decode(html4_entities.encode(string, :hexadecimal))
     end
   end
 

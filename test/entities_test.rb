@@ -4,7 +4,7 @@ require File.expand_path("../common", __FILE__)
 class HTMLEntities::EntitiesTest < Test::Unit::TestCase
 
   def test_should_raise_exception_when_unknown_flavor_specified
-    assert_raises(HTMLEntities::UnknownFlavor) do
+    assert_raises HTMLEntities::UnknownFlavor do
       HTMLEntities.new('foo')
     end
   end
