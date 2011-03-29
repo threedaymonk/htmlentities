@@ -1,3 +1,11 @@
+== 4.2.4 (2011-01-30)
+* Fix issue where double-escaped entities were not correctly escaped. Bug
+  reported by Christian Kruse.
+
+== 4.2.3 (2011-01-07)
+* Additional entities from Junya Ishihara.
+* Performance improvements.
+
 == 4.2.1 (2010-04-05)
 * Fixed error on Ruby 1.8.x when $KCODE was not set to "UTF8". Thanks to
   Benoit Larroque for the bug report.
