@@ -13,10 +13,9 @@ class HTMLEntities
     end
 
     def encode(source)
-      string = prepare(source)
-      string.gsub!(basic_entity_regexp){ encode_basic($&) }
-      string.gsub!(extended_entity_regexp){ encode_extended($&) }
-      string
+      prepare(source).
+        gsub(basic_entity_regexp){ encode_basic($&) }.
+        gsub(extended_entity_regexp){ encode_extended($&) }
     end
 
   private
@@ -27,7 +26,7 @@ class HTMLEntities
       end
     else
       def prepare(string) #:nodoc:
-        string.to_s.dup
+        string.to_s
       end
     end
 
