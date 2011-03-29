@@ -1,9 +1,5 @@
 # encoding: UTF-8
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'test/unit'
-require 'htmlentities'
-
-$KCODE = 'u' unless "1.9".respond_to?(:encoding)
+require File.expand_path("../common", __FILE__)
 
 class HTMLEntities::EntitiesTest < Test::Unit::TestCase
 
@@ -182,7 +178,7 @@ class HTMLEntities::EntitiesTest < Test::Unit::TestCase
     assert_decode([948].pack('U'), '&delta;')
   end
 
-  if RUBY_VERSION =~ /^1\.8\./
+  unless ENCODING_AWARE_RUBY
     # Reported by Benoit Larroque
     def test_should_encode_without_error_when_KCODE_is_not_UTF_8
       kcode = $KCODE

@@ -1,9 +1,5 @@
 # encoding: UTF-8
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'test/unit'
-require 'htmlentities'
-
-$KCODE = 'u' unless "1.9".respond_to?(:encoding)
+require File.expand_path("../common", __FILE__)
 
 #
 # Test that version 3.x functionality still works

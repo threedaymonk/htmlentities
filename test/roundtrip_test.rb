@@ -1,7 +1,5 @@
 # encoding: UTF-8
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'test/unit'
-require 'htmlentities'
+require File.expand_path("../common", __FILE__)
 
 class HTMLEntities::RoundtripTest < Test::Unit::TestCase
 

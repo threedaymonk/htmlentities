@@ -1,9 +1,5 @@
 # encoding: UTF-8
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'test/unit'
-require 'htmlentities'
-
-$KCODE = 'u' unless "1.9".respond_to?(:encoding)
+require File.expand_path("../common", __FILE__)
 
 class HTMLEntities::ExpandedTest < Test::Unit::TestCase
 
@@ -109,4 +105,5 @@ class HTMLEntities::ExpandedTest < Test::Unit::TestCase
       assert_not_equal xhtml_encoder.encode(decoded, :named), html_entities.encode(decoded, :named)
     end
   end
+
 end

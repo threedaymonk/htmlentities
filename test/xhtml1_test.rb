@@ -1,9 +1,5 @@
 # encoding: UTF-8
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'test/unit'
-require 'htmlentities'
-
-$KCODE = 'u' unless "1.9".respond_to?(:encoding)
+require File.expand_path("../common", __FILE__)
 
 class HTMLEntities::XHTML1Test < Test::Unit::TestCase
 
@@ -24,6 +20,5 @@ class HTMLEntities::XHTML1Test < Test::Unit::TestCase
   def test_should_not_decode_dotted_entity
     assert_equal "&b.Theta;", html_entities.decode("&b.Theta;")
   end
-
 
 end
