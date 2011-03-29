@@ -1,7 +1,7 @@
 # encoding: UTF-8
 $KCODE = 'u' unless "1.9".respond_to?(:encoding)
 
-require File.join(File.dirname(__FILE__), "performance")
+require File.expand_path("../performance", __FILE__)
 require "benchmark"
 
 job = HTMLEntitiesJob.new
