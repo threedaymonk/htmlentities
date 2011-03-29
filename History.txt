@@ -1,3 +1,8 @@
+== 4.3.0 (2011-03-29)
+* Use Ruby 1.9's encoding support where available.
+* Deprecated HTMLEntities.encode_entities/decode_entities interface is now
+  removed.
+
 == 4.2.4 (2011-01-30)
 * Fix issue where double-escaped entities were not correctly escaped. Bug
   reported by Christian Kruse.
