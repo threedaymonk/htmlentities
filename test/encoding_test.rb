@@ -4,7 +4,7 @@ require File.expand_path("../common", __FILE__)
 class HTMLEntities::EncodingTest < Test::Unit::TestCase
 
   def setup
-    @entities = [:xhtml1, :html4].map{ |a| HTMLEntities.new(a) }
+    @entities = [:xhtml1, :html4, :expanded].map{ |a| HTMLEntities.new(a) }
   end
 
   def assert_encode(expected, input, *args)
