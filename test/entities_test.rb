@@ -178,18 +178,6 @@ class HTMLEntities::EntitiesTest < Test::Unit::TestCase
     assert_decode([948].pack('U'), '&delta;')
   end
 
-  unless ENCODING_AWARE_RUBY
-    # Reported by Benoit Larroque
-    def test_should_encode_without_error_when_KCODE_is_not_UTF_8
-      kcode = $KCODE
-      $KCODE = "n"
-      coder = HTMLEntities.new;
-      text = [8212].pack('U')
-      assert_equal "&#8212;", coder.encode(text, :decimal)
-      $KCODE = kcode
-    end
-  end
-
   # Reported by ckruse
   def test_should_decode_only_first_element_in_masked_entities
     input = '&amp;#3346;'

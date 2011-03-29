@@ -13,13 +13,24 @@ class HTMLEntities
     end
 
     def encode(source)
-      string = source.to_s.dup
+      string = prepare(source)
       string.gsub!(basic_entity_regexp){ encode_basic($&) }
       string.gsub!(extended_entity_regexp){ encode_extended($&) }
       string
     end
 
   private
+
+    if "1.9".respond_to?(:encoding)
+      def prepare(string) #:nodoc:
+        string.to_s.encode(Encoding::UTF_8)
+      end
+    else
+      def prepare(string) #:nodoc:
+        string.to_s.dup
+      end
+    end
+
     def basic_entity_regexp
       @basic_entity_regexp ||= (
         case @flavor

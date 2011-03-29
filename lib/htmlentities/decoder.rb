@@ -7,7 +7,7 @@ class HTMLEntities
     end
 
     def decode(source)
-      source.to_s.gsub(@entity_regexp) {
+      prepare(source).gsub(@entity_regexp) {
         if $1 && codepoint = @map[$1]
           [codepoint].pack('U')
         elsif $2
@@ -21,6 +21,16 @@ class HTMLEntities
     end
 
   private
+    if "1.9".respond_to?(:encoding)
+      def prepare(string) #:nodoc:
+        string.to_s.encode(Encoding::UTF_8)
+      end
+    else
+      def prepare(string) #:nodoc:
+        string.to_s
+      end
+    end
+
     def entity_regexp
       key_lengths = @map.keys.map{ |k| k.length }
       entity_name_pattern =
