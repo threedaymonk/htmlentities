@@ -11,8 +11,8 @@ spec = Gem::Specification.new do |s|
   s.summary          = "A module for encoding and decoding (X)HTML entities."
   s.files            = Dir["{lib,test,perf}/**/*.rb"]
   s.require_path     = "lib"
-  s.test_file        = "test/test_all.rb"
+  s.test_files       = Dir["test/*_test.rb"]
   s.has_rdoc         = true
-  s.extra_rdoc_files = %w[README.rdoc History.txt COPYING.txt]
+  s.extra_rdoc_files = %w[History.txt COPYING.txt]
   s.homepage         = "http://htmlentities.rubyforge.org/"
 end
