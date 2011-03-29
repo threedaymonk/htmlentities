@@ -77,7 +77,7 @@ class HTMLEntities::EncodingTest < Test::Unit::TestCase
 
   def test_should_detect_illegal_encoding_command
     assert_raise HTMLEntities::InstructionError do
-      HTMLEntities.encode_entities('foo', :bar, :baz)
+      HTMLEntities.new.encode('foo', :bar, :baz)
     end
   end
 

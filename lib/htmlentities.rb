@@ -1,5 +1,4 @@
 # encoding: UTF-8
-require 'htmlentities/legacy'
 require 'htmlentities/flavors'
 require 'htmlentities/encoder'
 require 'htmlentities/decoder'
@@ -61,9 +60,9 @@ class HTMLEntities
   # If no instructions are specified, :basic will be used.
   #
   # Examples:
-  #   encode_entities(str) - XML-safe
-  #   encode_entities(str, :basic, :decimal) - XML-safe and 7-bit clean
-  #   encode_entities(str, :basic, :named, :decimal) - 7-bit clean, with all
+  #   encode(str) - XML-safe
+  #   encode(str, :basic, :decimal) - XML-safe and 7-bit clean
+  #   encode(str, :basic, :named, :decimal) - 7-bit clean, with all
   #   non-ASCII characters replaced with their named entity where possible, and
   #   decimal equivalents otherwise.
   #
