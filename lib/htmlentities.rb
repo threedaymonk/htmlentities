@@ -2,8 +2,8 @@
 # HTML entity encoding and decoding for Ruby
 #
 # Author::  Paul BATTLEY (pbattley @ gmail.com)
-# Version:: 2.1
-# Date::    2005-10-31
+# Version:: 2.2
+# Date::    2005-11-07
 #
 # == About
 #
@@ -22,6 +22,8 @@
 #
 
 module HTMLEntities
+
+    VERSION = '2.2'
 
     #
     # MAP is a hash of all the HTML entities I could discover, as taken
@@ -201,9 +203,9 @@ class String
     def decode_entities
         return gsub(HTMLEntities::NAMED_ENTITY_REGEXP) { 
             HTMLEntities::MAP.has_key?($1) ? [HTMLEntities::MAP[$1]].pack('U') : $& 
-        }.gsub(/&#([0-9]{2,10});/) { 
+        }.gsub(/&#([0-9]{1,7});/) { 
             [$1.to_i].pack('U') 
-        }.gsub(/&#x([0-9a-e]{2,8});/i) { 
+        }.gsub(/&#x([0-9a-f]{1,6});/i) { 
             [$1.to_i(16)].pack('U') 
         }
     end

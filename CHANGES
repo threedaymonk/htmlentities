@@ -1,3 +1,9 @@
+== 2.2 (2005-11-07)
+* Important bug fixes -- thanks to Moonwolf
+* Decoding hexadecimal entities now accepts 'f' as a hex digit. (D'oh!)
+* Decimal decoding edge cases addressed.
+* Test cases added.
+
 == 2.1 (2005-10-31)
 * Removed some unnecessary code in basic entity encoding.
 * Improved handling of encoding: commands are now automatically sorted, so the

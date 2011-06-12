@@ -95,5 +95,15 @@ class TestHTMLEntities < Test::Unit::TestCase
         assert_equal('&amp;amp;', '&amp;'.encode_entities(:basic))
         assert_equal('&amp;amp;', '&amp;'.encode_entities(:basic, :named))
     end
+
+    # Faults found and patched by Moonwolf
+    def test_moonwolf_d
+        assert_equal("\x2", '&#2;'.decode_entities)
+        assert_equal("\xf", '&#xf;'.decode_entities)
+    end
+
+    def test_version
+        assert_equal('2.2', HTMLEntities::VERSION)
+    end
 end
 
