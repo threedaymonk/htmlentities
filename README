@@ -1,15 +1,23 @@
+== HTMLEntities
+
 HTML entity encoding and decoding for Ruby
 
-This library extends the String class to allow encoding and decoding of
+The HTMLEntities module facilitates encoding and decoding of
 HTML/XML entities from/to their corresponding UTF-8 codepoints.
 
 To install (requires root/admin privileges):
 
-# ruby setup.rb
+ ruby setup.rb
 
-To test:
+Alternatively, you can just use the gem.
 
-$ ruby setup.rb test
+== Licence
 
-Comments are welcome.  Send an email to pbattley @ gmail.com.
+This code is free to use under the terms of the MIT licence. If you'd like to
+negotiate a different licence for a specific use, just contact me -- I'll
+almost certainly permit it.
+
+== Contact
+
+Comments are welcome. Send an email to pbattley@gmail.com.
 

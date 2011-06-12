@@ -1,1 +1,3 @@
-(Dir["test/test_*.rb"] - ["test/test_all.rb"]).each{|x| require x }
+Dir[File.dirname(__FILE__)+'/*_test.rb'].each do |test|
+  require test
+end

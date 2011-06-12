@@ -1,21 +1,29 @@
+== 3.0.0 (2005-04-08)
+* Changed licence to MIT due to confusion with previous 'Fair' licence (my
+  intention was to be liberal, not obscure).
+* Moved basic functionality out of String class; for previous behaviour,
+  require 'htmlentities/string'
+* Changed version numbering scheme
+* Now available as a Gem
+
 == 2.2 (2005-11-07)
 * Important bug fixes -- thanks to Moonwolf
 * Decoding hexadecimal entities now accepts 'f' as a hex digit. (D'oh!)
-* Decimal decoding edge cases addressed.
-* Test cases added.
+* Decimal decoding edge cases addressed
+* Test cases added
 
 == 2.1 (2005-10-31)
-* Removed some unnecessary code in basic entity encoding.
+* Removed some unnecessary code in basic entity encoding
 * Improved handling of encoding: commands are now automatically sorted, so the
-  user doesn't have to worry about their order.
-* Now using setup.rb.
-* Tests moved to separate file.
+  user doesn't have to worry about their order
+* Now using setup.rb
+* Tests moved to separate file
 
 == 2.0 (2005-08-23)
-* Added encoding to entities.
-* Decoding interface unchanged.
-* Fixed a bug with handling high codepoints.
+* Added encoding to entities
+* Decoding interface unchanged
+* Fixed a bug with handling high codepoints
 
 == 1.0 (2005-08-03)
-* Initial release.
-* Decoding only.
+* Initial release
+* Decoding only
