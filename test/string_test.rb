@@ -1,4 +1,4 @@
-$: << File.dirname(__FILE__) + '/../lib/'
+$:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'htmlentities/string'
 require 'test/unit'
 
