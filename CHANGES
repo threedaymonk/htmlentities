@@ -1,0 +1,15 @@
+== 2.1 (2005-10-31)
+* Removed some unnecessary code in basic entity encoding.
+* Improved handling of encoding: commands are now automatically sorted, so the
+  user doesn't have to worry about their order.
+* Now using setup.rb.
+* Tests moved to separate file.
+
+== 2.0 (2005-08-23)
+* Added encoding to entities.
+* Decoding interface unchanged.
+* Fixed a bug with handling high codepoints.
+
+== 1.0 (2005-08-03)
+* Initial release.
+* Decoding only.

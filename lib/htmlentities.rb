@@ -2,19 +2,13 @@
 # HTML entity encoding and decoding for Ruby
 #
 # Author::  Paul BATTLEY (pbattley @ gmail.com)
-# Version:: 2.0
-# Date::    2005-08-23
+# Version:: 2.1
+# Date::    2005-10-31
 #
 # == About
 #
 # This library extends the String class to allow encoding and decoding of
 # HTML/XML entities from/to their corresponding UTF-8 codepoints.
-#
-# == History
-#
-# 2005-08-23:: Version 2.0.  Added encoding to entities, and fixed a bug with
-#              handling high codepoints.
-# 2005-08-03:: Version 1.0.  Decoding only.
 #
 # == Licence
 #
@@ -178,18 +172,8 @@ module HTMLEntities
         /&([a-z]{#{HTMLEntities::MIN_LENGTH},#{HTMLEntities::MAX_LENGTH}});/i
 
     # Reverse map for converting characters to named entities
-    # This is just made by inverting the MAP hash
-    # We also add the &; around, as it makes things easier later on.
-    REVERSE_MAP = MAP.keys.inject({}){ |h,k| h[MAP[k]] = "&#{k};"; h }
+    REVERSE_MAP = MAP.invert
 
-    # The five entities that every XML parser must know
-    BASIC_ENTITIES = {
-        '<' => '&lt;',
-        '>' => '&gt;',
-        "'" => '&apos;',
-        '"' => '&quot;',
-        '&' => '&amp;'
-    }
     BASIC_ENTITY_REGEXP = /[<>'"&]/
 
     UTF8_NON_ASCII_REGEXP = /[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+/
@@ -197,6 +181,15 @@ module HTMLEntities
 end
 
 class String
+    
+    # Because there's no need to make the user worry about the order here,
+    # let's handle it.
+    ENCODE_ENTITIES_COMMAND_ORDER = {
+        :basic => 0,
+        :named => 1,
+        :decimal => 2,
+        :hexadecimal => 3
+    }
 
     #
     # Decode XML and HTML 4.01 entities in a string into their UTF-8
@@ -224,13 +217,11 @@ class String
     # :decimal :: Convert non-ASCII characters to decimal entities (e.g. &#1234;)
     # :hexadecimal :: Convert non-ASCII characters to hexadecimal entities (e.g. # &#x12ab;)
     #
-    # When :basic is used, it should be the first instruction, or the
-    # ampersands of other entities will be clobbered.
+    # You can specify the commands in any order, but they will be executed in
+    # the order listed above to ensure that entity ampersands are not
+    # clobbered and that named entities are replaced before numeric ones.
     #
-    # When :named and one of :decimal or :hexadecimal is used, :named should be
-    # specified before :decimal or :hexadecimal or it will have no effect.
-    #
-    # If no instruction is specified, :basic will be used.
+    # If no instructions are specified, :basic will be used.
     #
     # Examples:
     #   str.encode_entities - XML-safe
@@ -244,19 +235,33 @@ class String
     #
     def encode_entities(*instructions)
         str = nil
-        instructions = [:basic] if (instructions.empty?)
+        if (instructions.empty?)
+            instructions = [:basic] 
+        else
+            instructions.each do |instr|
+                unless ENCODE_ENTITIES_COMMAND_ORDER[instr]
+                    raise RuntimeError, "unknown encode_entities command `#{instr.inspect}'"
+                end
+            end
+            instructions.sort! { |a,b|
+                ENCODE_ENTITIES_COMMAND_ORDER[a] <=>
+                ENCODE_ENTITIES_COMMAND_ORDER[b]
+            }
+        end
         instructions.each do |instruction|
             case instruction
             when :basic
                 # Handled as basic ASCII
                 str = (str || self).gsub(HTMLEntities::BASIC_ENTITY_REGEXP) {
-                    HTMLEntities::BASIC_ENTITIES[$&]
+                    # It's safe to use the simpler [0] here because we know
+                    # that the basic entities are ASCII.
+                    '&' << HTMLEntities::REVERSE_MAP[$&[0]] << ';'
                 }
             when :named
                 # Test everything except printable ASCII 
                 str = (str || self).gsub(HTMLEntities::UTF8_NON_ASCII_REGEXP) {
                     cp = $&.unpack('U')[0]
-                    HTMLEntities::REVERSE_MAP[cp] || $&
+                    (e = HTMLEntities::REVERSE_MAP[cp]) ?  "&#{e};" : $&
                 }
             when :decimal
                 str = (str || self).gsub(HTMLEntities::UTF8_NON_ASCII_REGEXP) {
@@ -266,94 +271,9 @@ class String
                 str = (str || self).gsub(HTMLEntities::UTF8_NON_ASCII_REGEXP) {
                     "&#x#{$&.unpack('U')[0].to_s(16)};"
                 }
-            else
-                raise RuntimeError, "Unknown encoding instruction for encode_entities: #{mode.inspect}"
             end 
         end
         return str
-    end
-
-end
-
-if (__FILE__ == $0)
-    require 'test/unit'
-
-    class TestHTMLEntities < Test::Unit::TestCase
-        def test_basic_d
-            assert_equal('&', '&amp;'.decode_entities)
-            assert_equal('<', '&lt;'.decode_entities)
-            assert_equal('"', '&quot;'.decode_entities)
-        end
-            
-        def test_basic_e
-            assert_equal('&amp;', '&'.encode_entities(:basic))
-            assert_equal('&quot;', '"'.encode_entities)
-            assert_equal('&lt;', '<'.encode_entities(:basic))
-            assert_equal('&lt;', '<'.encode_entities)
-        end
-
-        def test_extended_d
-            assert_equal('±', '&plusmn;'.decode_entities)
-            assert_equal('ð', '&eth;'.decode_entities)
-            assert_equal('Œ', '&OElig;'.decode_entities)
-            assert_equal('œ', '&oelig;'.decode_entities)
-        end
-            
-        def test_extended_e
-            assert_equal('&plusmn;', '±'.encode_entities(:named))
-            assert_equal('&eth;', 'ð'.encode_entities(:named))
-            assert_equal('&OElig;', 'Œ'.encode_entities(:named))
-            assert_equal('&oelig;', 'œ'.encode_entities(:named))
-        end
-
-        def test_decimal_d
-            assert_equal('“', '&#8220;'.decode_entities)
-            assert_equal('…', '&#8230;'.decode_entities)
-            assert_equal(' ', '&#32;'.decode_entities)
-        end
-            
-        def test_decimal_e
-            assert_equal('&#8220;', '“'.encode_entities(:decimal))
-            assert_equal('&#8230;', '…'.encode_entities(:decimal))
-        end
-
-        def test_hexadecimal_d
-            assert_equal('−', '&#x2212;'.decode_entities)
-            assert_equal('—', '&#x2014;'.decode_entities)
-            assert_equal('`', '&#x0060;'.decode_entities)
-            assert_equal('`', '&#x60;'.decode_entities)
-        end
-            
-        def test_hexadecimal_e
-            assert_equal('&#x2212;', '−'.encode_entities(:hexadecimal))
-            assert_equal('&#x2014;', '—'.encode_entities(:hexadecimal))
-        end
-
-        def test_mixed_d
-            # Just a random headline - I needed something with accented letters.
-            assert_equal('Le tabac pourrait bientôt être banni dans tous les lieux publics en France', 
-                'Le tabac pourrait bient&ocirc;t &#234;tre banni dans tous les lieux publics en France'.decode_entities)
-        end
-
-        def test_mixed_e
-            assert_equal('&quot;bient&ocirc;t&quot; &amp; &#x6587;&#x5b57;',
-                '"bientôt" & 文字'.encode_entities(:basic, :named, :hexadecimal))
-            assert_equal('&quot;bient&ocirc;t&quot; &amp; &#25991;&#23383;',
-                '"bientôt" & 文字'.encode_entities(:basic, :named, :decimal))
-        end
-
-        def test_edge_cases_d
-            assert_equal('', ''.decode_entities)
-            assert_equal('&bogus;', '&bogus;'.decode_entities)
-            assert_equal('&amp;', '&amp;amp;'.decode_entities)
-        end
-
-        def test_edge_cases_e
-            assert_equal('`', '`'.encode_entities(:hexadecimal))
-            assert_equal(' ', ' '.encode_entities(:decimal))
-            assert_equal('&amp;amp;', '&amp;'.encode_entities(:basic))
-            assert_equal('&amp;amp;', '&amp;'.encode_entities(:basic, :named))
-        end
     end
 
 end

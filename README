@@ -1,0 +1,15 @@
+HTML entity encoding and decoding for Ruby
+
+This library extends the String class to allow encoding and decoding of
+HTML/XML entities from/to their corresponding UTF-8 codepoints.
+
+To install (requires root/admin privileges):
+
+# ruby setup.rb
+
+To test:
+
+$ ruby setup.rb test
+
+Comments are welcome.  Send an email to pbattley @ gmail.com.
+
