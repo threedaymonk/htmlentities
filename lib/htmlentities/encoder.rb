@@ -31,14 +31,7 @@ class HTMLEntities
     end
 
     def basic_entity_regexp
-      @basic_entity_regexp ||= (
-        case @flavor
-        when /^html/
-          /[<>"&]/
-        else
-          /[<>'"&]/
-        end
-      )
+      @basic_entity_regexp ||= @flavor.match(/^html/) ? /[<>"&]/ : /[<>'"&]/
     end
 
     def extended_entity_regexp
