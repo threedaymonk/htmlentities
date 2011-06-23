@@ -7,7 +7,7 @@ class HTMLEntities
     end
 
     def decode(source)
-      prepare(source).gsub(@entity_regexp) {
+      prepare(source).gsub(@entity_regexp){
         if $1 && codepoint = @map[$1]
           [codepoint].pack('U')
         elsif $2
