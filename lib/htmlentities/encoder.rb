@@ -14,8 +14,8 @@ class HTMLEntities
 
     def encode(source)
       prepare(source).
-        gsub(basic_entity_regexp){|match| encode_basic(match) }.
-        gsub(extended_entity_regexp){|match| encode_extended(match) }
+        gsub(basic_entity_regexp){ |match| encode_basic(match) }.
+        gsub(extended_entity_regexp){ |match| encode_extended(match) }
     end
 
   private
