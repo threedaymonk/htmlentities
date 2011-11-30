@@ -1,3 +1,7 @@
+== 4.3.1 (2011-11-30)
+* Fix bug when working with Rails 3/Ruby 1.8.7
+* Make character encoding behaviour consistent in Ruby 1.9.2/1.9.3
+
 == 4.3.0 (2011-03-29)
 * Use Ruby 1.9's encoding support where available.
 * Deprecated HTMLEntities.encode_entities/decode_entities interface is now
