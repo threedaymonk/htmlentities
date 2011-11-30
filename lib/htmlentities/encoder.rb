@@ -13,9 +13,11 @@ class HTMLEntities
     end
 
     def encode(source)
-      prepare(source).
-        gsub(basic_entity_regexp){ |match| encode_basic(match) }.
-        gsub(extended_entity_regexp){ |match| encode_extended(match) }
+      post_process(
+        prepare(source).
+          gsub(basic_entity_regexp){ |match| encode_basic(match) }.
+          gsub(extended_entity_regexp){ |match| encode_extended(match) }
+      )
     end
 
   private
@@ -24,9 +26,21 @@ class HTMLEntities
       def prepare(string) #:nodoc:
         string.to_s.encode(Encoding::UTF_8)
       end
+
+      def post_process(string)
+        if string.encoding != Encoding::ASCII && string.match(/\A[\x01-\x7F]*\z/)
+          string.encode(Encoding::ASCII)
+        else
+          string
+        end
+      end
     else
       def prepare(string) #:nodoc:
         string.to_s
+      end
+
+      def post_process(string)
+        string
       end
     end
 
