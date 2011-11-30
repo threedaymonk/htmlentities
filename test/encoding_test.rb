@@ -1,7 +1,5 @@
 # encoding: UTF-8
 require File.expand_path("../common", __FILE__)
-require 'rubygems'
-require 'active_support'
 
 class HTMLEntities::EncodingTest < Test::Unit::TestCase
 
@@ -13,11 +11,6 @@ class HTMLEntities::EncodingTest < Test::Unit::TestCase
     @entities.each do |coder|
       assert_equal expected, coder.encode(input, *args)
     end
-  end
-
-  def test_failing_encode
-    string = ActiveSupport::SafeBuffer.new("<p>This is a test</p>")
-    assert_equal HTMLEntities.new.encode(string, :named), "&lt;p&gt;This is a test&lt;/p&gt;"
   end
 
   def test_should_encode_basic_entities
