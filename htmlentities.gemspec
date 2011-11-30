@@ -14,5 +14,7 @@ spec = Gem::Specification.new do |s|
   s.test_files       = Dir["test/*_test.rb"]
   s.has_rdoc         = true
   s.extra_rdoc_files = %w[History.txt COPYING.txt]
-  s.homepage         = "http://htmlentities.rubyforge.org/"
+  s.homepage         = "https://github.com/threedaymonk/htmlentities"
+  s.add_development_dependency "mocha"
+  s.add_development_dependency "active_support", "3.1.0"
 end
