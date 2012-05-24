@@ -16,10 +16,12 @@ examples. In Ruby 1.8, you'll need to set `$KCODE = "u"`.
 
 ### Decoding
 
-    require 'htmlentities'
-    coder = HTMLEntities.new
-    string = "&eacute;lan"
-    coder.decode(string) # => "élan"
+```ruby
+require 'htmlentities'
+coder = HTMLEntities.new
+string = "&eacute;lan"
+coder.decode(string) # => "élan"
+```
 
 ### Encoding
 
@@ -27,33 +29,47 @@ This is slightly more complicated, due to the various options. The encode
 method takes a variable number of parameters, which tell it which instructions
 to carry out.
 
-    require 'htmlentities'
-    coder = HTMLEntities.new
-    string = "<élan>"
+```ruby
+require 'htmlentities'
+coder = HTMLEntities.new
+string = "<élan>"
+```
 
 Escape unsafe codepoints only:
 
-    coder.encode(string) # => "&lt;élan&gt;"
+```ruby
+coder.encode(string) # => "&lt;élan&gt;"
+```
 
 Or:
 
-    coder.encode(string, :basic) # => "&lt;élan&gt;"
+```ruby
+coder.encode(string, :basic) # => "&lt;élan&gt;"
+```
 
 Escape all entities that have names:
 
-    coder.encode(string, :named) # => "&lt;&eacute;lan&gt;"
+```ruby
+coder.encode(string, :named) # => "&lt;&eacute;lan&gt;"
+```
 
 Escape all non-ASCII/non-safe codepoints using decimal entities:
 
-    coder.encode(string, :decimal) # => "&#60;&#233;lan&#62;"
+```ruby
+coder.encode(string, :decimal) # => "&#60;&#233;lan&#62;"
+```
 
 As above, using hexadecimal entities:
 
-    coder.encode(string, :hexadecimal) # => "&#x3c;&#xe9;lan&#x3e;"
+```ruby
+coder.encode(string, :hexadecimal) # => "&#x3c;&#xe9;lan&#x3e;"
+```
 
 You can also use several options, e.g. use named entities for unsafe codepoints, then decimal for all other non-ASCII:
 
-    coder.encode(string, :basic, :decimal) # => "&lt;&#233;lan&gt;"
+```ruby
+coder.encode(string, :basic, :decimal) # => "&lt;&#233;lan&gt;"
+```
 
 ### Flavours
 
@@ -65,7 +81,9 @@ HTMLEntities knows about three different sets of entities:
 
 The default is `:xhtml`, but you can override this:
 
-    coder = HTMLEntities.new(:expanded)
+```ruby
+coder = HTMLEntities.new(:expanded)
+```
 
 ## Licence
 
