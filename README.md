@@ -1,6 +1,9 @@
 HTMLEntities
 ============
 
+The canonical source for this project can be found at GitHub:
+[threedaymonk/htmlentities](https://github.com/threedaymonk/htmlentities).
+
 HTML entity encoding and decoding for Ruby
 
 HTMLEntities is a simple library to facilitate encoding and decoding of named
