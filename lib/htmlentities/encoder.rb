@@ -14,10 +14,9 @@ class HTMLEntities
 
     def encode(source)
       minimize_encoding(
-        prepare(source).
-          gsub(basic_entity_regexp){ |match| encode_basic(match) }.
-          gsub(extended_entity_regexp){ |match| encode_extended(match) }
-      )
+        replace_extended(
+          replace_basic(
+            prepare(source))))
     end
 
   private
@@ -48,6 +47,14 @@ class HTMLEntities
         pattern << "|'" if @flavor == 'html4'
         Regexp.new(pattern)
       )
+    end
+
+    def replace_basic(string)
+      string.gsub(basic_entity_regexp){ |match| encode_basic(match) }
+    end
+
+    def replace_extended(string)
+      string.gsub(extended_entity_regexp){ |match| encode_extended(match) }
     end
 
     def validate_instructions(instructions)
