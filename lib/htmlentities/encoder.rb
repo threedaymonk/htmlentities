@@ -13,7 +13,7 @@ class HTMLEntities
     end
 
     def encode(source)
-      post_process(
+      minimize_encoding(
         prepare(source).
           gsub(basic_entity_regexp){ |match| encode_basic(match) }.
           gsub(extended_entity_regexp){ |match| encode_extended(match) }
@@ -26,12 +26,16 @@ class HTMLEntities
       string.to_s.encode(Encoding::UTF_8)
     end
 
-    def post_process(string)
-      if string.encoding != Encoding::ASCII && string.match(/\A[\x01-\x7F]*\z/)
+    def minimize_encoding(string)
+      if string.encoding != Encoding::ASCII && contains_only_ascii?(string)
         string.encode(Encoding::ASCII)
       else
         string
       end
+    end
+
+    def contains_only_ascii?(string)
+      string.match(/\A[\x01-\x7F]*\z/)
     end
 
     def basic_entity_regexp
