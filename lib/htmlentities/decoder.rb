@@ -27,12 +27,11 @@ class HTMLEntities
 
     def entity_regexp
       key_lengths = @map.keys.map{ |k| k.length }
-      entity_name_pattern =
-        if @flavor == 'expanded'
-          '(?:b\.)?[a-z][a-z0-9]'
-        else
-          '[a-z][a-z0-9]'
-        end
+      if @flavor == 'expanded'
+        entity_name_pattern = '(?:b\.)?[a-z][a-z0-9]'
+      else
+        entity_name_pattern = '[a-z][a-z0-9]'
+      end
       /&(?:(#{entity_name_pattern}{#{key_lengths.min - 1},#{key_lengths.max - 1}})|#([0-9]{1,7})|#x([0-9a-f]{1,6}));/i
     end
   end

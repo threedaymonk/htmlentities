@@ -7,9 +7,9 @@ class HTMLEntities
     def initialize(flavor, instructions)
       @flavor = flavor
       instructions = [:basic] if instructions.empty?
-      validate_instructions(instructions)
-      build_basic_entity_encoder(instructions)
-      build_extended_entity_encoder(instructions)
+      validate_instructions instructions
+      build_basic_entity_encoder instructions
+      build_extended_entity_encoder instructions
     end
 
     def encode(source)
@@ -22,7 +22,7 @@ class HTMLEntities
 
   private
 
-    def prepare(string) #:nodoc:
+    def prepare(string)
       string.to_s.encode(Encoding::UTF_8)
     end
 
@@ -53,11 +53,13 @@ class HTMLEntities
     def validate_instructions(instructions)
       unknown_instructions = instructions - INSTRUCTIONS
       if unknown_instructions.any?
-        raise InstructionError, "unknown encode_entities command(s): #{unknown_instructions.inspect}"
+        raise InstructionError,
+          "unknown encode_entities command(s): #{unknown_instructions.inspect}"
       end
 
-      if (instructions.include?(:decimal) && instructions.include?(:hexadecimal))
-        raise InstructionError, "hexadecimal and decimal encoding are mutually exclusive"
+      if instructions.include?(:decimal) && instructions.include?(:hexadecimal)
+        raise InstructionError,
+          "hexadecimal and decimal encoding are mutually exclusive"
       end
     end
 
@@ -69,18 +71,24 @@ class HTMLEntities
       elsif instructions.include?(:hexadecimal)
         method = :encode_hexadecimal
       end
-      instance_eval "def encode_basic(char)\n#{method}(char)\nend"
+      instance_eval <<-END
+        def encode_basic(char)
+          #{method}(char)
+        end
+      END
     end
 
     def build_extended_entity_encoder(instructions)
-      definition = "def encode_extended(char)\n"
-      ([:named, :decimal, :hexadecimal] & instructions).each do |encoder|
-        definition << "encoded = encode_#{encoder}(char)\n"
-        definition << "return encoded if encoded\n"
-      end
-      definition << "char\n"
-      definition << "end"
-      instance_eval definition
+      operations = [:named, :decimal, :hexadecimal] & instructions
+      instance_eval <<-END
+        def encode_extended(char)
+          #{operations.map{ |encoder| %{
+            encoded = encode_#{encoder}(char)
+            return encoded if encoded
+          }}.join("\n")}
+          char
+        end
+      END
     end
 
     def encode_named(char)
