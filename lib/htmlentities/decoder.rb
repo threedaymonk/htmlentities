@@ -21,14 +21,8 @@ class HTMLEntities
     end
 
   private
-    if "1.9".respond_to?(:encoding)
-      def prepare(string) #:nodoc:
-        string.to_s.encode(Encoding::UTF_8)
-      end
-    else
-      def prepare(string) #:nodoc:
-        string.to_s
-      end
+    def prepare(string) #:nodoc:
+      string.to_s.encode(Encoding::UTF_8)
     end
 
     def entity_regexp

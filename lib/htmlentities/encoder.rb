@@ -22,24 +22,14 @@ class HTMLEntities
 
   private
 
-    if "1.9".respond_to?(:encoding)
-      def prepare(string) #:nodoc:
-        string.to_s.encode(Encoding::UTF_8)
-      end
+    def prepare(string) #:nodoc:
+      string.to_s.encode(Encoding::UTF_8)
+    end
 
-      def post_process(string)
-        if string.encoding != Encoding::ASCII && string.match(/\A[\x01-\x7F]*\z/)
-          string.encode(Encoding::ASCII)
-        else
-          string
-        end
-      end
-    else
-      def prepare(string) #:nodoc:
-        string.to_s
-      end
-
-      def post_process(string)
+    def post_process(string)
+      if string.encoding != Encoding::ASCII && string.match(/\A[\x01-\x7F]*\z/)
+        string.encode(Encoding::ASCII)
+      else
         string
       end
     end
@@ -50,15 +40,9 @@ class HTMLEntities
 
     def extended_entity_regexp
       @extended_entity_regexp ||= (
-        options = [nil]
-        if encoding_aware?
-          pattern = '[^\u{20}-\u{7E}]'
-        else
-          pattern = '[^\x20-\x7E]'
-          options << "U"
-        end
+        pattern = '[^\u{20}-\u{7E}]'
         pattern << "|'" if @flavor == 'html4'
-        Regexp.new(pattern, *options)
+        Regexp.new(pattern)
       )
     end
 
@@ -115,10 +99,6 @@ class HTMLEntities
         uniqmap = skips ? map.reject{|ent,hx| skips.include? ent} : map
         uniqmap.invert
       )
-    end
-
-    def encoding_aware?
-      "1.9".respond_to?(:encoding)
     end
   end
 end
