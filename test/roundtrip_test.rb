@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require File.expand_path("../common", __FILE__)
+require File.expand_path("../test_helper", __FILE__)
 
 class HTMLEntities::RoundtripTest < Test::Unit::TestCase
 

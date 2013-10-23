@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require File.expand_path("../common", __FILE__)
+require File.expand_path("../test_helper", __FILE__)
 
 if ENV["RUN_INTEROPERABILITY_TESTS"]
   class HTMLEntities::InteroperabilityTest < Test::Unit::TestCase
