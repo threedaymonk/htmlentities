@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require File.expand_path("../test_helper", __FILE__)
+require_relative "./test_helper"
 
 class HTML4Test < Test::Unit::TestCase
 
