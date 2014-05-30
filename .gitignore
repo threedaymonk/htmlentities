@@ -1,4 +1,5 @@
 *.gem
 /doc
+/tmp
 *.rbc
 Gemfile.lock
