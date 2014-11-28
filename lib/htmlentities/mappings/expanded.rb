@@ -463,7 +463,6 @@ class HTMLEntities
     'incare'         => 0x2105,   # ℅                  CARE OF
     'infin'          => 0x221e,   # ∞       xhtml      INFINITY
     'inodot'         => 0x0131,   # ı   dup            LATIN SMALL LETTER DOTLESS I
-    'inodot'         => 0x0131,   # ı   dup            LATIN SMALL LETTER DOTLESS I
     'int'            => 0x222b,   # ∫       xhtml      INTEGRAL
     'intcal'         => 0x22ba,   # ⊺                  INTERCALATE
     'IOcy'           => 0x0401,   # Ё                  CYRILLIC CAPITAL LETTER IO
