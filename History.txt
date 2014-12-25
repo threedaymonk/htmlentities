@@ -1,3 +1,6 @@
+== 4.3.3 (2014-12-25)
+* Remove duplicate hash entry that causes warnings in Ruby 2.2.0.
+
 == 4.3.2 (2014-05-31)
 * Ruby 1.8 is no longer supported
 
