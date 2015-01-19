@@ -2,8 +2,8 @@ require "rake/testtask"
 require "rake/clean"
 
 CLEAN.include("doc")
-DOCTYPES = %w[html4 xhtml1]
-DATA_FILES = DOCTYPES.map{ |d| "lib/htmlentities/mappings/#{d}.rb" }
+FLAVORS = %w[html4 xhtml1 expanded]
+DATA_FILES = FLAVORS.map{ |d| "lib/htmlentities/mappings/#{d}.rb" }
 SOURCES = FileList["lib/**/*.rb"] - DATA_FILES
 
 task :default => [:entities, :test]
@@ -15,11 +15,14 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-DOCTYPES.each do |name|
-  file "lib/htmlentities/mappings/#{name}.rb" => %w[util/build_entities.rb] do |f|
-    rm_f f.name
-    sh %{ruby util/build_entities.rb #{name} > #{f.name}}
+%w[html4 xhtml].each do |name|
+  file "lib/htmlentities/mappings/#{name}.rb" => %w[util/build_html_entities.rb] do |f|
+    sh %{ruby util/build_html_entities.rb #{name} > #{f.name}}
   end
+end
+
+file "lib/htmlentities/mappings/expanded.rb" => %w[util/build_expanded_entities.rb] do |f|
+  sh %{ruby util/build_expanded_entities.rb > #{f.name}}
 end
 
 file "doc" => SOURCES do |f|
