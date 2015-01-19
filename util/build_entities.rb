@@ -34,17 +34,17 @@ dtd.scan(/<!ENTITY \s+ % \s+ (\w+) \s+ PUBLIC \s+ "(.*?)" \s+ "(.*?)" \s* >/x) d
 end
 
 # These two are a special case in the W3C entity file, so fix them:
-entities['lt']  = ?<
-entities['amp'] = ?&
+entities['lt']  = '<'.unpack('U').first
+entities['amp'] = '&'.unpack('U').first
 
 puts <<"END"
+# encoding: UTF-8
 class HTMLEntities
-  MAPPINGS = {} unless defined? MAPPINGS
   MAPPINGS['#{flavor}'] = {
 #{
-  entities.keys.sort_by{ |s| 
-    [s.downcase, s] 
-  }.map{ |name| 
+  entities.keys.sort_by{ |s|
+    [s.downcase, s]
+  }.map{ |name|
     "    '#{name}' => #{entities[name]}"
   }.join(",\n")
 }

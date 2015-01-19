@@ -3,10 +3,10 @@ require "rake/clean"
 
 CLEAN.include("doc")
 DOCTYPES = %w[html4 xhtml1]
-DATA_FILES = DOCTYPES.map{ |d| "lib/htmlentities/#{d}.rb" }
+DATA_FILES = DOCTYPES.map{ |d| "lib/htmlentities/mappings/#{d}.rb" }
 SOURCES = FileList["lib/**/*.rb"] - DATA_FILES
 
-task :default => :test
+task :default => [:entities, :test]
 
 Rake::TestTask.new do |t|
   t.libs << "test"
@@ -16,7 +16,7 @@ Rake::TestTask.new do |t|
 end
 
 DOCTYPES.each do |name|
-  file "lib/htmlentities/#{name}.rb" => %w[util/build_entities.rb] do |f|
+  file "lib/htmlentities/mappings/#{name}.rb" => %w[util/build_entities.rb] do |f|
     rm_f f.name
     sh %{ruby util/build_entities.rb #{name} > #{f.name}}
   end
