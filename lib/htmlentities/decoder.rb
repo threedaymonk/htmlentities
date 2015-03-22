@@ -6,18 +6,36 @@ class HTMLEntities
       @entity_regexp = entity_regexp
     end
 
-    def decode(source)
-      prepare(source).gsub(@entity_regexp){
-        if $1 && codepoint = @map[$1]
-          [codepoint].pack('U')
-        elsif $2
-          [$2.to_i(10)].pack('U')
-        elsif $3
-          [$3.to_i(16)].pack('U')
-        else
-          $&
-        end
-      }
+    def decode(source, options = {})
+      excluded = options[:exclude] ||= []
+      if excluded.count
+        prepare(source).gsub(@entity_regexp){
+          if $1 && codepoint = @map[$1]
+            res = [codepoint].pack('U')
+            excluded.include?(res) ? $& : res
+          elsif $2
+            res = [$2.to_i(10)].pack('U')
+            excluded.include?(res) ? $& : res
+          elsif $3
+            res = [$3.to_i(16)].pack('U')
+            excluded.include?(res) ? $& : res
+          else
+            $&
+          end
+        }
+      else
+        prepare(source).gsub(@entity_regexp){
+          if $1 && codepoint = @map[$1]
+            [codepoint].pack('U')
+          elsif $2
+            [$2.to_i(10)].pack('U')
+          elsif $3
+            [$3.to_i(16)].pack('U')
+          else
+            $&
+          end
+        }
+      end
     end
 
   private

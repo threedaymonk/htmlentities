@@ -24,6 +24,8 @@ require 'htmlentities'
 coder = HTMLEntities.new
 string = "&eacute;lan"
 coder.decode(string) # => "élan"
+string = "&lt;&eacute;lan&#x3E;", exclude: ['<', '>']
+coder.decode(string) # => "&lt;élan&#x3E;"
 ```
 
 ### Encoding
