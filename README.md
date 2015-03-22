@@ -22,8 +22,10 @@ examples. In Ruby 1.8, you'll need to set `$KCODE = "u"`.
 ```ruby
 require 'htmlentities'
 coder = HTMLEntities.new
-string = "&eacute;lan"
+string = "&eacute;an"
 coder.decode(string) # => "élan"
+string = "&lt;&eacute;lan&#x3E;", exclude: ['<', '>']
+coder.decode(string) # => "&lt;élan&#x3E;"
 ```
 
 ### Encoding
