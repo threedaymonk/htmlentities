@@ -9,11 +9,11 @@ class HTMLEntities
     def decode(source)
       prepare(source).gsub(@entity_regexp){
         if $1 && codepoint = @map[$1]
-          [codepoint].pack('U')
+          codepoint.chr(Encoding::UTF_8)
         elsif $2
-          [$2.to_i(10)].pack('U')
+          $2.to_i(10).chr(Encoding::UTF_8)
         elsif $3
-          [$3.to_i(16)].pack('U')
+          $3.to_i(16).chr(Encoding::UTF_8)
         else
           $&
         end
