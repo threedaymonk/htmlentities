@@ -467,7 +467,6 @@ class HTMLEntities
     'intcal'         => 0x22ba,   # ⊺                  INTERCALATE
     'IOcy'           => 0x0401,   # Ё                  CYRILLIC CAPITAL LETTER IO
     'iocy'           => 0x0451,   # ё                  CYRILLIC SMALL LETTER IO
-    'Iodot'          => 0x0130,   # İ                  LATIN CAPITAL LETTER I WITH DOT ABOVE
     'Iogon'          => 0x012e,   # Į                  LATIN CAPITAL LETTER I WITH OGONEK
     'iogon'          => 0x012f,   # į                  LATIN SMALL LETTER I WITH OGONEK
     'Iota'           => 0x0399,   # Ι   dup xhtml      GREEK CAPITAL LETTER IOTA
