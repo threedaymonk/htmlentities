@@ -16,8 +16,7 @@ Rake::TestTask.new do |t|
 end
 
 DOCTYPES.each do |name|
-  file "lib/htmlentities/mappings/#{name}.rb" => %w[util/build_entities.rb] do |f|
-    rm_f f.name
+  file "lib/htmlentities/mappings/#{name}.rb" do |f|
     sh %{ruby util/build_entities.rb #{name} > #{f.name}}
   end
 end
