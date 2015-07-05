@@ -34,8 +34,8 @@ dtd.scan(/<!ENTITY \s+ % \s+ (\w+) \s+ PUBLIC \s+ "(.*?)" \s+ "(.*?)" \s* >/x) d
 end
 
 # These two are a special case in the W3C entity file, so fix them:
-entities['lt']  = '<'.unpack('U').first
-entities['amp'] = '&'.unpack('U').first
+entities['lt']  = '<'.codepoints.first
+entities['amp'] = '&'.codepoints.first
 
 puts <<"END"
 # encoding: UTF-8

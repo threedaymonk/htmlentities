@@ -99,16 +99,16 @@ class HTMLEntities
     end
 
     def encode_named(char)
-      cp = char.unpack('U')[0]
+      cp = char.codepoints.first
       (e = reverse_map[cp]) && "&#{e};"
     end
 
     def encode_decimal(char)
-      "&##{char.unpack('U')[0]};"
+      "&##{char.codepoints.first};"
     end
 
     def encode_hexadecimal(char)
-      "&#x#{char.unpack('U')[0].to_s(16)};"
+      "&#x#{char.codepoints.first.to_s(16)};"
     end
 
     def reverse_map
