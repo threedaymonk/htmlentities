@@ -1,53 +1,52 @@
 # encoding: UTF-8
-require_relative "./test_helper"
+require_relative "./spec_helper"
 
-class HTMLEntities::DecodingTest < Test::Unit::TestCase
-
-  def setup
-    @entities = [:xhtml1, :html4, :expanded].map{ |a| HTMLEntities.new(a) }
-  end
+RSpec.describe "Decoding" do
+  let(:entities) {
+    [:xhtml1, :html4, :expanded].map{ |a| HTMLEntities.new(a) }
+  }
 
   def assert_decode(expected, input)
-    @entities.each do |coder|
-      assert_equal expected, coder.decode(input)
+    entities.each do |coder|
+      expect(coder.decode(input)).to eq(expected)
     end
   end
 
-  def test_should_decode_basic_entities
+  it "decodes basic entities" do
     assert_decode '&', '&amp;'
     assert_decode '<', '&lt;'
     assert_decode '"', '&quot;'
   end
 
-  def test_should_decode_extended_named_entities
+  it "decodes extended named entities" do
     assert_decode '±', '&plusmn;'
     assert_decode 'ð', '&eth;'
     assert_decode 'Œ', '&OElig;'
     assert_decode 'œ', '&oelig;'
   end
 
-  def test_should_decode_decimal_entities
+  it "decodes decimal entities" do
     assert_decode '“', '&#8220;'
     assert_decode '…', '&#8230;'
     assert_decode ' ', '&#32;'
   end
 
-  def test_should_decode_hexadecimal_entities
+  it "decodes hexadecimal entities" do
     assert_decode '−', '&#x2212;'
     assert_decode '—', '&#x2014;'
     assert_decode '`', '&#x0060;'
     assert_decode '`', '&#x60;'
   end
 
-  def test_should_not_mutate_string_being_decoded
+  it "nots mutate string being decoded" do
     original = "&lt;&#163;"
     input = original.dup
     HTMLEntities.new.decode(input)
 
-    assert_equal original, input
+    expect(input).to eq(original)
   end
 
-  def test_should_decode_text_with_mix_of_entities
+  it "decodes text with mix of entities" do
     # Just a random headline - I needed something with accented letters.
     assert_decode(
       'Le tabac pourrait bientôt être banni dans tous les lieux publics en France',
@@ -59,40 +58,40 @@ class HTMLEntities::DecodingTest < Test::Unit::TestCase
     )
   end
 
-  def test_should_decode_empty_string
+  it "decodes empty string" do
     assert_decode '', ''
   end
 
-  def test_should_skip_unknown_entity
+  it "skips unknown entity" do
     assert_decode '&bogus;', '&bogus;'
   end
 
-  def test_should_decode_double_encoded_entity_once
+  it "decodes double encoded entity once" do
     assert_decode '&amp;', '&amp;amp;'
   end
 
   # Faults found and patched by Moonwolf
-  def test_should_decode_full_hexadecimal_range
+  it "decodes full hexadecimal range" do
     (0..127).each do |codepoint|
       assert_decode [codepoint].pack('U'), "&\#x#{codepoint.to_s(16)};"
     end
   end
 
   # Reported by Dallas DeVries and Johan Duflost
-  def test_should_decode_named_entities_reported_as_missing_in_3_0_1
+  it "decodes named entities reported as missing in 3 0 1" do
     assert_decode  [178].pack('U'), '&sup2;'
     assert_decode [8226].pack('U'), '&bull;'
     assert_decode  [948].pack('U'), '&delta;'
   end
 
   # Reported by ckruse
-  def test_should_decode_only_first_element_in_masked_entities
+  it "decodes only first element in masked entities" do
     input = '&amp;#3346;'
     expected = '&#3346;'
     assert_decode expected, input
   end
 
-  def test_should_ducktype_parameter_to_string_before_encoding
+  it "ducktypes parameter to string before encoding" do
     obj = Object.new
     def obj.to_s; "foo"; end
     assert_decode "foo", obj

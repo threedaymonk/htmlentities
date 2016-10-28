@@ -1,13 +1,8 @@
 # encoding: UTF-8
-require_relative "./test_helper"
+require_relative "./spec_helper"
 
-class HTMLEntities::ExpandedTest < Test::Unit::TestCase
-
-  attr_reader :html_entities
-
-  def setup
-    @html_entities = HTMLEntities.new(:expanded)
-  end
+describe 'Expanded entities' do
+  let(:html_entities) { HTMLEntities.new(:expanded) }
 
   TEST_ENTITIES_SET = [
     ['sub',      0x2282,   "xhtml", nil,      "⊂", ],
@@ -42,68 +37,68 @@ class HTMLEntities::ExpandedTest < Test::Unit::TestCase
     ['b.Delta',  0x0394,   nil,     "skip",   "Δ", ],
   ]
 
-  def test_should_encode_apos_entity
-    assert_equal "&apos;", html_entities.encode("'", :named) # note: the normal ' 0x0027, not ʼ 0x02BC
+  it "encodes apos entity" do
+    # note: the normal ' 0x0027, not ʼ 0x02BC
+    expect(html_entities.encode("'", :named)).to eq("&apos;")
   end
 
-  def test_should_decode_apos_entity
-    assert_equal "é'", html_entities.decode("&eacute;&apos;")
+  it "decodes apos entity" do
+    expect(html_entities.decode("&eacute;&apos;")).to eq("é'")
   end
 
-  def test_should_decode_dotted_entity
-    assert_equal "Θ", html_entities.decode("&b.Theta;")
+  it "decodes dotted entity" do
+    expect(html_entities.decode("&b.Theta;")).to eq("Θ")
   end
 
-  def test_should_encode_from_test_set
+  it "encodes from test set" do
     TEST_ENTITIES_SET.each do |ent, _, _, skip, decoded|
       next if skip
-      assert_equal "&#{ent};", html_entities.encode(decoded, :named)
+      expect(html_entities.encode(decoded, :named)).to eq("&#{ent};")
     end
   end
 
-  def test_should_decode_from_test_set
+  it "decodes from test set" do
     TEST_ENTITIES_SET.each do |ent, _, _, _, decoded|
-      assert_equal decoded, html_entities.decode("&#{ent};")
+      expect(html_entities.decode("&#{ent};")).to eq(decoded)
     end
   end
 
-  def test_should_round_trip_preferred_entities
+  it "round trips preferred entities" do
     TEST_ENTITIES_SET.each do |ent, _, _, skip, decoded|
       next if skip
-      assert_equal "&#{ent};", html_entities.encode(html_entities.decode("&#{ent};"), :named)
-      assert_equal decoded,    html_entities.decode(html_entities.encode(decoded, :named))
+      expect(html_entities.encode(html_entities.decode("&#{ent};"), :named)).to eq("&#{ent};")
+      expect(html_entities.decode(html_entities.encode(decoded, :named))).to eq(decoded)
     end
   end
 
-  def test_should_not_round_trip_decoding_skipped_entities
+  it "does not round trip decoding skipped entities" do
     TEST_ENTITIES_SET.each do |ent, _, _, skip, decoded|
       next unless skip
-      assert_not_equal "&#{ent};", html_entities.encode(html_entities.decode("&#{ent};"), :named)
+      expect(html_entities.encode(html_entities.decode("&#{ent};"), :named)).not_to eq("&#{ent};")
     end
   end
 
-  def test_should_round_trip_encoding_skipped_entities
+  it "round trips encoding skipped entities" do
     TEST_ENTITIES_SET.each do |ent, _, _, skip, decoded|
       next unless skip
-      assert_equal decoded,        html_entities.decode(html_entities.encode(decoded, :named))
+      expect(html_entities.decode(html_entities.encode(decoded, :named))).to eq(decoded)
     end
   end
 
-  def test_should_treat_all_xhtml1_named_entities_as_xhtml_does
+  it "treats all xhtml1 named entities as xhtml does" do
     xhtml_encoder = HTMLEntities.new(:xhtml1)
     HTMLEntities::MAPPINGS['xhtml1'].each do |ent, decoded|
-      assert_equal xhtml_encoder.decode("&#{ent};"),      html_entities.decode("&#{ent};")
-      assert_equal xhtml_encoder.encode(decoded, :named), html_entities.encode(decoded, :named)
+      expect(html_entities.decode("&#{ent};")).to eq(xhtml_encoder.decode("&#{ent};"))
+      expect(html_entities.encode(decoded, :named)).to eq(xhtml_encoder.encode(decoded, :named))
     end
   end
 
-  def test_should_not_agree_with_xhtml1_when_not_in_xhtml
+  it "does not agree with xhtml1 when not in xhtml" do
     xhtml_encoder = HTMLEntities.new(:xhtml1)
     TEST_ENTITIES_SET.each do |ent, _, xhtml1, skip, decoded|
       next if xhtml1 || skip
-      assert_not_equal xhtml_encoder.decode("&#{ent};"),         html_entities.decode("&#{ent};")
-      assert_not_equal xhtml_encoder.encode(decoded, :named), html_entities.encode(decoded, :named)
+      expect(html_entities.decode("&#{ent};")).not_to eq(xhtml_encoder.decode("&#{ent};"))
+      expect(html_entities.encode(decoded, :named)).not_to eq(xhtml_encoder.encode(decoded, :named))
     end
   end
-
 end

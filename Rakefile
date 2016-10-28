@@ -1,4 +1,4 @@
-require "rake/testtask"
+require "rspec/core/rake_task"
 require "rake/clean"
 
 CLEAN.include("doc")
@@ -6,13 +6,12 @@ DOCTYPES = %w[html4 xhtml1]
 DATA_FILES = DOCTYPES.map{ |d| "lib/htmlentities/mappings/#{d}.rb" }
 SOURCES = FileList["lib/**/*.rb"] - DATA_FILES
 
-task :default => [:entities, :test]
+task :default => [:entities, :spec]
 
-Rake::TestTask.new do |t|
-  t.libs << "test"
-  t.test_files = FileList['test/*_test.rb']
-  t.ruby_opts << "-w"
-  t.verbose = true
+desc "Run the specs."
+RSpec::Core::RakeTask.new do |t|
+  t.pattern = "spec/**/*_spec.rb"
+  t.verbose = false
 end
 
 DOCTYPES.each do |name|
