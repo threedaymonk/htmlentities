@@ -32,7 +32,7 @@ class HTMLEntities
       else
         entity_name_pattern = '[a-z][a-z0-9]'
       end
-      /&(?:(#{entity_name_pattern}{#{key_lengths.min - 1},#{key_lengths.max - 1}})|#([0-9]{1,7})|#x([0-9a-f]{1,6}));/i
+      /&(?:(#{entity_name_pattern}{#{key_lengths.min - 1},#{key_lengths.max - 1}})|#([0-9]{1,7})|#x([0-9a-f]{1,6}))(;|(?=\n|<))/i
     end
   end
 end
