@@ -97,4 +97,14 @@ RSpec.describe "Decoding" do
     assert_decode "foo", obj
   end
 
+  def test_should_decode_without_semicolon_if_persmissible
+    assert_decode "&\n\n\n", "&amp;\n\n\n"
+    assert_decode '&<tag>', '&amp<tag>'
+  end
+
+  def test_should_skip_without_semicolon
+    assert_decode '&amp', '&amp'
+    assert_decode '&ampsome text', '&ampsome text'
+  end
+
 end
