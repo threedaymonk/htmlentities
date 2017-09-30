@@ -2,14 +2,14 @@ class HTMLEntities
   InstructionError = Class.new(RuntimeError)
 
   class Encoder #:nodoc:
-    INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal]
+    INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal, :four_byte]
 
     def initialize(flavor, instructions)
       @flavor = flavor
-      instructions = [:basic] if instructions.empty?
-      validate_instructions instructions
-      build_basic_entity_encoder instructions
-      build_extended_entity_encoder instructions
+      @instructions = instructions.empty? ? [:basic] : instructions
+      validate_instructions
+      build_basic_entity_encoder
+      build_extended_entity_encoder
     end
 
     def encode(source)
@@ -50,32 +50,44 @@ class HTMLEntities
     end
 
     def replace_basic(string)
-      string.gsub(basic_entity_regexp){ |match| encode_basic(match) }
+      string.gsub(basic_entity_regexp) do |match|
+        if @instructions.include?(:four_byte) && match.bytes.length != 4
+          match
+        else
+          encode_basic(match)
+        end
+      end
     end
 
     def replace_extended(string)
-      string.gsub(extended_entity_regexp){ |match| encode_extended(match) }
+      string.gsub(extended_entity_regexp) do |match|
+        if @instructions.include?(:four_byte) && match.bytes.length != 4
+          match
+        else
+          encode_extended(match)
+        end
+      end
     end
 
-    def validate_instructions(instructions)
-      unknown_instructions = instructions - INSTRUCTIONS
+    def validate_instructions
+      unknown_instructions = @instructions - INSTRUCTIONS
       if unknown_instructions.any?
         raise InstructionError,
           "unknown encode_entities command(s): #{unknown_instructions.inspect}"
       end
 
-      if instructions.include?(:decimal) && instructions.include?(:hexadecimal)
+      if @instructions.include?(:decimal) && @instructions.include?(:hexadecimal)
         raise InstructionError,
           "hexadecimal and decimal encoding are mutually exclusive"
       end
     end
 
-    def build_basic_entity_encoder(instructions)
-      if instructions.include?(:basic) || instructions.include?(:named)
+    def build_basic_entity_encoder
+      if @instructions.include?(:basic) || @instructions.include?(:named)
         method = :encode_named
-      elsif instructions.include?(:decimal)
+      elsif @instructions.include?(:decimal)
         method = :encode_decimal
-      elsif instructions.include?(:hexadecimal)
+      elsif @instructions.include?(:hexadecimal)
         method = :encode_hexadecimal
       end
       instance_eval <<-END
@@ -85,8 +97,8 @@ class HTMLEntities
       END
     end
 
-    def build_extended_entity_encoder(instructions)
-      operations = [:named, :decimal, :hexadecimal] & instructions
+    def build_extended_entity_encoder
+      operations = [:named, :decimal, :hexadecimal] & @instructions
       instance_eval <<-END
         def encode_extended(char)
           #{operations.map{ |encoder| %{

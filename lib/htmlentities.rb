@@ -52,6 +52,7 @@ class HTMLEntities
   # :named :: Convert non-ASCII characters to their named HTML 4.01 equivalent
   # :decimal :: Convert non-ASCII characters to decimal entities (e.g. &#1234;)
   # :hexadecimal :: Convert non-ASCII characters to hexadecimal entities (e.g. # &#x12ab;)
+  # :four_byte :: Convert four-byte characters
   #
   # You can specify the commands in any order, but they will be executed in
   # the order listed above to ensure that entity ampersands are not
