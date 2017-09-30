@@ -53,6 +53,11 @@ class HTMLEntities::EncodingTest < Test::Unit::TestCase
     assert_encode '&#x2014;', '—', :hexadecimal
   end
 
+  def test_should_limit_encoding_to_four_byte_characters
+    assert_encode '−', '−', :hexadecimal, :four_byte
+    assert_encode '&#x1f32f;', '🌯', :hexadecimal, :four_byte
+  end
+
   def test_should_encode_text_using_mix_of_entities
     assert_encode(
       '&quot;bient&ocirc;t&quot; &amp; &#x6587;&#x5b57;',

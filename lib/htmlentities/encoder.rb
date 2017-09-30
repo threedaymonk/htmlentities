@@ -2,7 +2,7 @@ class HTMLEntities
   InstructionError = Class.new(RuntimeError)
 
   class Encoder #:nodoc:
-    INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal]
+    INSTRUCTIONS = [:basic, :named, :decimal, :hexadecimal, :four_byte]
 
     def initialize(flavor, instructions)
       @flavor = flavor
@@ -50,11 +50,23 @@ class HTMLEntities
     end
 
     def replace_basic(string)
-      string.gsub(basic_entity_regexp){ |match| encode_basic(match) }
+      string.gsub(basic_entity_regexp) do |match|
+        if @instructions.include?(:four_byte) && match.bytes.length != 4
+          match
+        else
+          encode_basic(match)
+        end
+      end
     end
 
     def replace_extended(string)
-      string.gsub(extended_entity_regexp){ |match| encode_extended(match) }
+      string.gsub(extended_entity_regexp) do |match|
+        if @instructions.include?(:four_byte) && match.bytes.length != 4
+          match
+        else
+          encode_extended(match)
+        end
+      end
     end
 
     def validate_instructions

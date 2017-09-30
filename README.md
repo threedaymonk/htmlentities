@@ -35,43 +35,49 @@ to carry out.
 ```ruby
 require 'htmlentities'
 coder = HTMLEntities.new
-string = "<élan>"
+string = "<élan>🤠"
 ```
 
 Escape unsafe codepoints only:
 
 ```ruby
-coder.encode(string) # => "&lt;élan&gt;"
+coder.encode(string) # => "&lt;élan&gt;🤠"
 ```
 
 Or:
 
 ```ruby
-coder.encode(string, :basic) # => "&lt;élan&gt;"
+coder.encode(string, :basic) # => "&lt;élan&gt;🤠"
 ```
 
 Escape all entities that have names:
 
 ```ruby
-coder.encode(string, :named) # => "&lt;&eacute;lan&gt;"
+coder.encode(string, :named) # => "&lt;&eacute;lan&gt;🤠"
 ```
 
 Escape all non-ASCII/non-safe codepoints using decimal entities:
 
 ```ruby
-coder.encode(string, :decimal) # => "&#60;&#233;lan&#62;"
+coder.encode(string, :decimal) # => "&#60;&#233;lan&#62;&#129312;"
 ```
 
 As above, using hexadecimal entities:
 
 ```ruby
-coder.encode(string, :hexadecimal) # => "&#x3c;&#xe9;lan&#x3e;"
+coder.encode(string, :hexadecimal) # => "&#x3c;&#xe9;lan&#x3e;&#x1f920;"
 ```
 
 You can also use several options, e.g. use named entities for unsafe codepoints, then decimal for all other non-ASCII:
 
 ```ruby
-coder.encode(string, :basic, :decimal) # => "&lt;&#233;lan&gt;"
+coder.encode(string, :basic, :decimal) # => "&lt;&#233;lan&gt;&#129312;"
+```
+
+You can also restrict encoding to four-byte characters (like emojis):
+
+```ruby
+coder.encode(string, :hexadecimal, :four_byte) # => "<élan>&#x1f920;"
 ```
 
 ### Flavours
