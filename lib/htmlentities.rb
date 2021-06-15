@@ -40,8 +40,13 @@ class HTMLEntities
   #
   # Unknown named entities will not be converted
   #
-  def decode(source)
-    (@decoder ||= Decoder.new(@flavor)).decode(source)
+  def decode(source, tolerate_capitalization_mistakes: false)
+    @decoder ||= Decoder.new(@flavor)
+
+    @decoder.decode(
+      source,
+      tolerate_capitalization_mistakes: tolerate_capitalization_mistakes
+    )
   end
 
   #
