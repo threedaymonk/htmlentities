@@ -6,9 +6,9 @@ class HTMLEntities
       @entity_regexp = entity_regexp
     end
 
-    def decode(source)
+    def decode(source, tolerate_capitalization_mistakes: false)
       prepare(source).gsub(@entity_regexp){
-        if $1 && codepoint = @map[$1]
+        if $1 && codepoint = lookup_mapping($1, case_insensitive: tolerate_capitalization_mistakes)
           codepoint.chr(Encoding::UTF_8)
         elsif $2
           $2.to_i(10).chr(Encoding::UTF_8)
@@ -21,6 +21,17 @@ class HTMLEntities
     end
 
   private
+
+    def lookup_mapping(entity, case_insensitive:)
+      @map.fetch(entity) do
+        if case_insensitive
+          @map[entity.downcase]
+        else
+          nil
+        end
+      end
+    end
+
     def prepare(string) #:nodoc:
       string.to_s.encode(Encoding::UTF_8)
     end

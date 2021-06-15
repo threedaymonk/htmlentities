@@ -7,9 +7,11 @@ class HTMLEntities::DecodingTest < Test::Unit::TestCase
     @entities = [:xhtml1, :html4, :expanded].map{ |a| HTMLEntities.new(a) }
   end
 
-  def assert_decode(expected, input)
+  def assert_decode(expected, input, *args)
     @entities.each do |coder|
-      assert_equal expected, coder.decode(input)
+      actual = coder.decode(input, *args)
+      assert_equal expected, actual,
+        "Expected '#{input}' decode to '#{expected}' but got '#{actual}' instead."
     end
   end
 
@@ -24,6 +26,20 @@ class HTMLEntities::DecodingTest < Test::Unit::TestCase
     assert_decode 'ð', '&eth;'
     assert_decode 'Œ', '&OElig;'
     assert_decode 'œ', '&oelig;'
+  end
+
+  def test_should_decode_basic_entities_with_capitalization_mistakes
+    all_possible_capitalizations('oelig').each do |input|
+      entity = "&#{input};"
+
+      expected = if entity == '&OElig;'
+          'Œ' # This is the only capitalization that should decode to the capital 'Œ'
+        else
+          'œ'
+        end
+
+      assert_decode expected, entity, tolerate_capitalization_mistakes: true
+    end
   end
 
   def test_should_decode_decimal_entities
@@ -98,4 +114,18 @@ class HTMLEntities::DecodingTest < Test::Unit::TestCase
     assert_decode "foo", obj
   end
 
+  private
+
+  def all_possible_capitalizations(input)
+    chars = input.downcase.chars
+
+    [true, false]
+      .repeated_permutation(chars.count)
+      .map do |permutation|
+        permutation
+          .zip(chars)
+          .map { |should_capitalize, char| should_capitalize ? char.upcase : char }
+          .join
+      end
+  end
 end
