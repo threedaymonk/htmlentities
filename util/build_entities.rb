@@ -12,12 +12,12 @@ flavor = ARGV.first
 dtd_uri = DTD[flavor]
 entities = {}
 
-dtd = open(dtd_uri){ |io| io.read }
+dtd = URI.open(dtd_uri){ |io| io.read }
 dtd.scan(/<!ENTITY \s+ % \s+ (\w+) \s+ PUBLIC \s+ "(.*?)" \s+ "(.*?)" \s* >/x) do |m|
   entity_file = URI.parse(dtd_uri).merge(m[2]).to_s
   $stderr.puts("Found reference to entity file at #{entity_file}")
   entities_found = 0
-  entity = open(entity_file){ |io| io.read }
+  entity = URI.open(entity_file){ |io| io.read }
   entity.scan(/<!ENTITY \s+ (\w+) \s+ (?:CDATA \s+)? "\&\#(.*?);"/x) do |m|
     name, codepoint = m
     case codepoint
