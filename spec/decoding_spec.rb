@@ -38,7 +38,7 @@ RSpec.describe "Decoding" do
     assert_decode '`', '&#x60;'
   end
 
-  it "nots mutate string being decoded" do
+  it "does not mutate string being decoded" do
     original = "&lt;&#163;"
     input = original.dup
     HTMLEntities.new.decode(input)
@@ -78,7 +78,7 @@ RSpec.describe "Decoding" do
   end
 
   # Reported by Dallas DeVries and Johan Duflost
-  it "decodes named entities reported as missing in 3 0 1" do
+  it "decodes named entities reported as missing in 3.0.1" do
     assert_decode  [178].pack('U'), '&sup2;'
     assert_decode [8226].pack('U'), '&bull;'
     assert_decode  [948].pack('U'), '&delta;'
