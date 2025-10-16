@@ -19,4 +19,5 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "benchmark"
+  s.add_development_dependency "ruby-prof"
 end

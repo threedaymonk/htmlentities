@@ -2,16 +2,18 @@
 $KCODE = 'u' unless "1.9".respond_to?(:encoding)
 
 require File.expand_path("../performance", __FILE__)
-require "profiler"
+require "ruby-prof"
 
 job = HTMLEntitiesJob.new
 
 puts "Encoding"
-Profiler__::start_profile
+encoding = RubyProf::Profile.new
+encoding.start
 job.encode(1)
-Profiler__::print_profile($stdout)
+RubyProf::FlatPrinter.new(encoding.stop).print $stdout
 
 puts "Decoding"
-Profiler__::start_profile
+decoding = RubyProf::Profile.new
+decoding.start
 job.decode(1)
-Profiler__::print_profile($stdout)
+RubyProf::FlatPrinter.new(decoding.stop).print $stdout
