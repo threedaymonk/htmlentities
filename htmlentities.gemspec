@@ -18,4 +18,5 @@ spec = Gem::Specification.new do |s|
   s.homepage         = "https://github.com/threedaymonk/htmlentities"
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec", "~> 3"
+  s.add_development_dependency "benchmark"
 end
