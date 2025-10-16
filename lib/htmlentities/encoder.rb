@@ -34,11 +34,11 @@ class HTMLEntities
     end
 
     def contains_only_ascii?(string)
-      string.match(/\A[\x01-\x7F]*\z/)
+      string.match?(/\A[\x01-\x7F]*\z/)
     end
 
     def basic_entity_regexp
-      @basic_entity_regexp ||= @flavor.match(/^html/) ? /[<>"&]/ : /[<>'"&]/
+      @basic_entity_regexp ||= @flavor.match?(/^html/) ? /[<>"&]/ : /[<>'"&]/
     end
 
     def extended_entity_regexp
