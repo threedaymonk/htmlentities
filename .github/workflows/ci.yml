@@ -1,0 +1,27 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  specs:
+    name: Run specs
+
+    strategy:
+      fail-fast: true
+      matrix:
+        ruby: ["3.2", "3.3", "3.4"]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Run specs
+        run: bundle exec rspec
