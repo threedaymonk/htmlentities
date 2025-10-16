@@ -99,6 +99,7 @@ RSpec.describe "Decoding" do
 
   def test_should_decode_without_semicolon_if_persmissible
     assert_decode "&\n\n\n", "&amp;\n\n\n"
+    assert_decode "&\r\n", "&amp;\r\n"
     assert_decode '&<tag>', '&amp<tag>'
   end
 
