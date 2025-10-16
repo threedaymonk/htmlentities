@@ -12,11 +12,6 @@ and XHTML documents.
 
 ## Usage
 
-HTMLEntities works with UTF-8 (or ASCII) strings only.
-
-Please ensure that your system is set to display UTF-8 before running these
-examples. In Ruby 1.8, you'll need to set `$KCODE = "u"`.
-
 ### Decoding
 
 ```ruby
