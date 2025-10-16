@@ -80,7 +80,7 @@ RSpec.describe "Encoding" do
     }.to raise_exception(HTMLEntities::InstructionError)
   end
 
-  it "nots encode normal ASCII" do
+  it "does not encode normal ASCII" do
     assert_encode '`', '`'
     assert_encode ' ', ' '
   end
@@ -89,7 +89,7 @@ RSpec.describe "Encoding" do
     assert_encode '&amp;amp;', '&amp;'
   end
 
-  it "nots mutate string being encoded" do
+  it "does not mutate string being encoded" do
     original = "<£"
     input = original.dup
     HTMLEntities.new.encode(input, :basic, :decimal)

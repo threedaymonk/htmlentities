@@ -97,13 +97,13 @@ RSpec.describe "Decoding" do
     assert_decode "foo", obj
   end
 
-  def test_should_decode_without_semicolon_if_persmissible
+  it "decodes without semicolon if permissible" do
     assert_decode "&\n\n\n", "&amp;\n\n\n"
     assert_decode "&\r\n", "&amp;\r\n"
     assert_decode '&<tag>', '&amp<tag>'
   end
 
-  def test_should_skip_without_semicolon
+  it "ignores a semicolon that does not precede a newline or tag" do
     assert_decode '&amp', '&amp'
     assert_decode '&ampsome text', '&ampsome text'
   end
