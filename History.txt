@@ -1,3 +1,8 @@
+== 4.4.0 (2025-11-17)
+* Make a few small optimisations.
+* Allow decoding of entities without semicolons at end of line.
+* Remove support for old unsupported Ruby versions (below 3.2).
+
 == 4.3.4 (2015-07-05)
 * Remove erroneous 'Iodot' entity (a typo'd duplicate of Idot).
 
