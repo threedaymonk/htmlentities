@@ -16,6 +16,7 @@ spec = Gem::Specification.new do |s|
   s.test_files       = Dir["test/*_test.rb"]
   s.extra_rdoc_files = %w[History.txt COPYING.txt]
   s.homepage         = "https://github.com/threedaymonk/htmlentities"
+  s.required_ruby_version = ">= 3.2.0"
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "benchmark"
