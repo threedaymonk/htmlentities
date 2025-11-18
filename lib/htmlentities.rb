@@ -70,6 +70,10 @@ class HTMLEntities
   # contains valid UTF-8 before calling this method.
   #
   def encode(source, *instructions)
-    Encoder.new(@flavor, instructions).encode(source)
+    if instructions.empty?
+      (@default_encoder ||= Encoder.new(@flavor, instructions)).encode(source)
+    else
+      Encoder.new(@flavor, instructions).encode(source)
+    end
   end
 end
