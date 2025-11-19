@@ -1,3 +1,6 @@
+== 4.4.1 (2025-11-19)
+* Restore support for some older unsupported Ruby versions (down to 2.7).
+
 == 4.4.0 (2025-11-17)
 * Make a few small optimisations.
 * Allow decoding of entities without semicolons at end of line.
