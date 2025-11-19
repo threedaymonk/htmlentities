@@ -28,12 +28,12 @@ task :entities => DATA_FILES
 
 desc "Run benchmark"
 task :benchmark do |t|
-  system "ruby -v"
-  system "ruby perf/benchmark.rb"
+  sh "ruby -v"
+  sh "ruby perf/benchmark.rb"
 end
 
 desc "Use profiler to analyse encoding and decoding"
 task :profile do |t|
-  system "ruby -v"
-  system "ruby perf/profile.rb"
+  sh "ruby -v"
+  sh "ruby perf/profile.rb"
 end
