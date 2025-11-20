@@ -1,3 +1,6 @@
+== 4.4.2 (2025-11-20)
+* Optimise encoding in the default case.
+
 == 4.4.1 (2025-11-19)
 * Restore support for some older unsupported Ruby versions (down to 2.7).
 
