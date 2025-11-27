@@ -2,104 +2,131 @@
 require_relative "./spec_helper"
 
 RSpec.describe "Encoding" do
-  let(:entities) {
-    [:xhtml1, :html4, :expanded].map{ |a| HTMLEntities.new(a) }
-  }
+  shared_examples "every codec" do
+    it "encodes basic entities" do
+      expect(codec.encode("&", :basic)).to eq("&amp;")
+      expect(codec.encode("\"")).to eq("&quot;")
+      expect(codec.encode("<", :basic)).to eq("&lt;")
+      expect(codec.encode("<")).to eq("&lt;")
+    end
 
-  def assert_encode(expected, input, *args)
-    entities.each do |coder|
-      expect(coder.encode(input, *args)).to eq(expected)
+    it "encodes basic entities to decimal" do
+      expect(codec.encode("&", :decimal)).to eq("&#38;")
+      expect(codec.encode("\"", :decimal)).to eq("&#34;")
+      expect(codec.encode("<", :decimal)).to eq("&#60;")
+      expect(codec.encode(">", :decimal)).to eq("&#62;")
+      expect(codec.encode("'", :decimal)).to eq("&#39;")
+    end
+
+    it "encodes basic entities to hexadecimal" do
+      expect(codec.encode("&", :hexadecimal)).to eq("&#x26;")
+      expect(codec.encode("\"", :hexadecimal)).to eq("&#x22;")
+      expect(codec.encode("<", :hexadecimal)).to eq("&#x3c;")
+      expect(codec.encode(">", :hexadecimal)).to eq("&#x3e;")
+      expect(codec.encode("'", :hexadecimal)).to eq("&#x27;")
+    end
+
+    it "encodes extended named entities" do
+      expect(codec.encode("±", :named)).to eq("&plusmn;")
+      expect(codec.encode("ð", :named)).to eq("&eth;")
+      expect(codec.encode("Œ", :named)).to eq("&OElig;")
+      expect(codec.encode("œ", :named)).to eq("&oelig;")
+    end
+
+    it "encodes decimal entities" do
+      expect(codec.encode("“", :decimal)).to eq("&#8220;")
+      expect(codec.encode("…", :decimal)).to eq("&#8230;")
+    end
+
+    it "encodes hexadecimal entities" do
+      expect(codec.encode("−", :hexadecimal)).to eq("&#x2212;")
+      expect(codec.encode("—", :hexadecimal)).to eq("&#x2014;")
+    end
+
+    it "encodes text using mix of entities" do
+      expect(codec.encode("\"bientôt\" & 文字", :basic, :named, :hexadecimal))
+        .to eq("&quot;bient&ocirc;t&quot; &amp; &#x6587;&#x5b57;")
+      expect(codec.encode("\"bientôt\" & 文字", :basic, :named, :decimal))
+        .to eq("&quot;bient&ocirc;t&quot; &amp; &#25991;&#23383;")
+    end
+
+    it "sorts commands when encoding using mix of entities" do
+      expect(codec.encode("\"bientôt\" & 文字", :named, :hexadecimal, :basic))
+        .to eq("&quot;bient&ocirc;t&quot; &amp; &#x6587;&#x5b57;")
+      expect(codec.encode("\"bientôt\" & 文字", :decimal, :named, :basic))
+        .to eq("&quot;bient&ocirc;t&quot; &amp; &#25991;&#23383;")
+    end
+
+    it "detects illegal encoding command" do
+      expect { HTMLEntities.new.encode("foo", :bar, :baz) }
+        .to raise_exception(HTMLEntities::InstructionError)
+    end
+
+    it "does not encode normal ASCII" do
+      expect(codec.encode("`")).to eq("`")
+      expect(codec.encode(" ")).to eq(" ")
+    end
+
+    it "doubles encode existing entity" do
+      expect(codec.encode("&amp;")).to eq("&amp;amp;")
+    end
+
+    it "does not mutate string being encoded" do
+      original = "<£"
+      input = original.dup
+      HTMLEntities.new.encode(input, :basic, :decimal)
+
+      expect(input).to eq(original)
+    end
+
+    it "ducktypes parameter to string before encoding" do
+      obj = Object.new
+      def obj.to_s; "foo"; end
+      expect(codec.encode(obj)).to eq("foo")
     end
   end
 
-  it "encodes basic entities" do
-    assert_encode '&amp;',  '&', :basic
-    assert_encode '&quot;', '"'
-    assert_encode '&lt;',   '<', :basic
-    assert_encode '&lt;',   '<'
+  context "with default flavor" do
+    let(:codec) { HTMLEntities.new }
+
+    it_behaves_like "every codec"
+
+    it "encodes &apos;" do
+      expect(codec.encode("'")).to eq("&apos;")
+    end
   end
 
-  it "encodes basic entities to decimal" do
-    assert_encode '&#38;', '&', :decimal
-    assert_encode '&#34;', '"', :decimal
-    assert_encode '&#60;', '<', :decimal
-    assert_encode '&#62;', '>', :decimal
-    assert_encode '&#39;', "'", :decimal
+  context "with xhtml1 flavor" do
+    let(:codec) { HTMLEntities.new(:xhtml1) }
+
+    it_behaves_like "every codec"
+
+    it "encodes &apos;" do
+      expect(codec.encode("'")).to eq("&apos;")
+    end
   end
 
-  it "encodes basic entities to hexadecimal" do
-    assert_encode '&#x26;', '&', :hexadecimal
-    assert_encode '&#x22;', '"', :hexadecimal
-    assert_encode '&#x3c;', '<', :hexadecimal
-    assert_encode '&#x3e;', '>', :hexadecimal
-    assert_encode '&#x27;', "'", :hexadecimal
+  context "with html4 flavor" do
+    let(:codec) { HTMLEntities.new(:html4) }
+
+    it_behaves_like "every codec"
+
+    it "does not encode &apos;" do
+      expect(codec.encode("'")).to eq("'")
+    end
   end
 
-  it "encodes extended named entities" do
-    assert_encode '&plusmn;', '±', :named
-    assert_encode '&eth;',    'ð', :named
-    assert_encode '&OElig;',  'Œ', :named
-    assert_encode '&oelig;',  'œ', :named
-  end
+  context "with expanded flavor" do
+    let(:codec) { HTMLEntities.new(:expanded) }
 
-  it "encodes decimal entities" do
-    assert_encode '&#8220;', '“', :decimal
-    assert_encode '&#8230;', '…', :decimal
-  end
+    it_behaves_like "every codec"
 
-  it "encodes hexadecimal entities" do
-    assert_encode '&#x2212;', '−', :hexadecimal
-    assert_encode '&#x2014;', '—', :hexadecimal
-  end
+    it "encodes &apos;" do
+      expect(codec.encode("'")).to eq("&apos;")
+    end
 
-  it "encodes text using mix of entities" do
-    assert_encode(
-      '&quot;bient&ocirc;t&quot; &amp; &#x6587;&#x5b57;',
-      '"bientôt" & 文字', :basic, :named, :hexadecimal
-    )
-    assert_encode(
-      '&quot;bient&ocirc;t&quot; &amp; &#25991;&#23383;',
-      '"bientôt" & 文字', :basic, :named, :decimal
-    )
-  end
-
-  it "sorts commands when encoding using mix of entities" do
-    assert_encode(
-      '&quot;bient&ocirc;t&quot; &amp; &#x6587;&#x5b57;',
-      '"bientôt" & 文字', :named, :hexadecimal, :basic
-    )
-    assert_encode(
-      '&quot;bient&ocirc;t&quot; &amp; &#25991;&#23383;',
-      '"bientôt" & 文字', :decimal, :named, :basic
-    )
-  end
-
-  it "detects illegal encoding command" do
-    expect {
-      HTMLEntities.new.encode('foo', :bar, :baz)
-    }.to raise_exception(HTMLEntities::InstructionError)
-  end
-
-  it "does not encode normal ASCII" do
-    assert_encode '`', '`'
-    assert_encode ' ', ' '
-  end
-
-  it "doubles encode existing entity" do
-    assert_encode '&amp;amp;', '&amp;'
-  end
-
-  it "does not mutate string being encoded" do
-    original = "<£"
-    input = original.dup
-    HTMLEntities.new.encode(input, :basic, :decimal)
-
-    expect(input).to eq(original)
-  end
-
-  it "ducktypes parameter to string before encoding" do
-    obj = Object.new
-    def obj.to_s; "foo"; end
-    assert_encode "foo", obj
+    it "encodes ambiguous characters" do
+      expect(codec.encode("α", :named)).to eq("&alpha;")
+    end
   end
 end

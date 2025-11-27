@@ -3,7 +3,6 @@ require_relative "./spec_helper"
 
 describe 'Entities' do
   it "raises exception when unknown flavor specified" do
-
     expect {
       HTMLEntities.new('foo')
     }.to raise_exception(HTMLEntities::UnknownFlavor)

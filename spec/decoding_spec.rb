@@ -2,110 +2,153 @@
 require_relative "./spec_helper"
 
 RSpec.describe "Decoding" do
-  let(:entities) {
-    [:xhtml1, :html4, :expanded].map{ |a| HTMLEntities.new(a) }
-  }
+  shared_examples "every codec" do
+    it "decodes basic entities" do
+      expect(codec.decode("&amp;")).to eq("&")
+      expect(codec.decode("&lt;")).to eq("<")
+      expect(codec.decode("&quot;")).to eq('"')
+    end
 
-  def assert_decode(expected, input)
-    entities.each do |coder|
-      expect(coder.decode(input)).to eq(expected)
+    it "decodes extended named entities" do
+      expect(codec.decode("&plusmn;")).to eq("±")
+      expect(codec.decode("&eth;")).to eq("ð")
+      expect(codec.decode("&OElig;")).to eq("Œ")
+      expect(codec.decode("&oelig;")).to eq("œ")
+    end
+
+    it "decodes decimal entities" do
+      expect(codec.decode("&#8220;")).to eq("“")
+      expect(codec.decode("&#8230;")).to eq("…")
+      expect(codec.decode("&#32;")).to eq(" ")
+    end
+
+    it "decodes hexadecimal entities" do
+      expect(codec.decode("&#x2212;")).to eq("−")
+      expect(codec.decode("&#x2014;")).to eq("—")
+      expect(codec.decode("&#x0060;")).to eq("`")
+      expect(codec.decode("&#x60;")).to eq("`")
+    end
+
+    it "does not mutate string being decoded" do
+      original = "&lt;&#163;"
+      input = original.dup
+      HTMLEntities.new.decode(input)
+
+      expect(input).to eq(original)
+    end
+
+    it "decodes text with mix of entities" do
+      # Just a random headline - I needed something with accented letters.
+      expect(codec.decode("Le tabac pourrait bient&ocirc;t &#234;tre banni dans tous les lieux publics en France"))
+        .to eq("Le tabac pourrait bientôt être banni dans tous les lieux publics en France")
+      expect(codec.decode("&quot;bient&ocirc;t&quot; &amp; &#25991;&#x5b57;"))
+        .to eq("\"bientôt\" & 文字")
+    end
+
+    it "does nothing with an empty string" do
+      expect(codec.decode("")).to eq("")
+    end
+
+    it "skips unknown entity" do
+      expect(codec.decode("&bogus;")).to eq("&bogus;")
+    end
+
+    it "decodes double encoded entity once" do
+      expect(codec.decode("&amp;amp;")).to eq("&amp;")
+      expect(codec.decode("&amp;#3346;")).to eq("&#3346;")
+    end
+
+    # Faults found and patched by Moonwolf
+    it "decodes full hexadecimal range" do
+      (0..127).each do |codepoint|
+        expect(codec.decode("&\#x#{codepoint.to_s(16)};")).to eq([codepoint].pack("U"))
+      end
+    end
+
+    # Reported by Dallas DeVries and Johan Duflost
+    it "decodes named entities reported as missing in 3.0.1" do
+      expect(codec.decode("&sup2;")).to eq("\u00b2")
+      expect(codec.decode("&bull;")).to eq("\u2022")
+      expect(codec.decode("&delta;")).to eq("\u03b4")
+    end
+
+    it "casts parameter to string before encoding" do
+      obj = Object.new
+      def obj.to_s; "foo"; end
+      expect(codec.decode(obj)).to eq("foo")
+    end
+
+    it "decodes without semicolon if permissible" do
+      expect(codec.decode("&amp;\n\n\n")).to eq("&\n\n\n")
+      expect(codec.decode("&amp;\r\n")).to eq("&\r\n")
+      expect(codec.decode("&amp<tag>")).to eq("&<tag>")
+    end
+
+    it "ignores a semicolon that does not precede a newline or tag" do
+      expect(codec.decode("&amp")).to eq("&amp")
+      expect(codec.decode("&ampsome text")).to eq("&ampsome text")
     end
   end
 
-  it "decodes basic entities" do
-    assert_decode '&', '&amp;'
-    assert_decode '<', '&lt;'
-    assert_decode '"', '&quot;'
-  end
+  context "with default flavor" do
+    let(:codec) { HTMLEntities.new }
 
-  it "decodes extended named entities" do
-    assert_decode '±', '&plusmn;'
-    assert_decode 'ð', '&eth;'
-    assert_decode 'Œ', '&OElig;'
-    assert_decode 'œ', '&oelig;'
-  end
+    it_behaves_like "every codec"
 
-  it "decodes decimal entities" do
-    assert_decode '“', '&#8220;'
-    assert_decode '…', '&#8230;'
-    assert_decode ' ', '&#32;'
-  end
+    it "decodes &apos;" do
+      expect(codec.decode("&apos;")).to eq("'")
+    end
 
-  it "decodes hexadecimal entities" do
-    assert_decode '−', '&#x2212;'
-    assert_decode '—', '&#x2014;'
-    assert_decode '`', '&#x0060;'
-    assert_decode '`', '&#x60;'
-  end
-
-  it "nots mutate string being decoded" do
-    original = "&lt;&#163;"
-    input = original.dup
-    HTMLEntities.new.decode(input)
-
-    expect(input).to eq(original)
-  end
-
-  it "decodes text with mix of entities" do
-    # Just a random headline - I needed something with accented letters.
-    assert_decode(
-      'Le tabac pourrait bientôt être banni dans tous les lieux publics en France',
-      'Le tabac pourrait bient&ocirc;t &#234;tre banni dans tous les lieux publics en France'
-    )
-    assert_decode(
-      '"bientôt" & 文字',
-      '&quot;bient&ocirc;t&quot; &amp; &#25991;&#x5b57;'
-    )
-  end
-
-  it "decodes empty string" do
-    assert_decode '', ''
-  end
-
-  it "skips unknown entity" do
-    assert_decode '&bogus;', '&bogus;'
-  end
-
-  it "decodes double encoded entity once" do
-    assert_decode '&amp;', '&amp;amp;'
-  end
-
-  # Faults found and patched by Moonwolf
-  it "decodes full hexadecimal range" do
-    (0..127).each do |codepoint|
-      assert_decode [codepoint].pack('U'), "&\#x#{codepoint.to_s(16)};"
+    it "skips entities from expanded set" do
+      expect(codec.decode("&vdash;")).to eq("&vdash;")
+      expect(codec.decode("&b.alpha;")).to eq("&b.alpha;")
     end
   end
 
-  # Reported by Dallas DeVries and Johan Duflost
-  it "decodes named entities reported as missing in 3 0 1" do
-    assert_decode  [178].pack('U'), '&sup2;'
-    assert_decode [8226].pack('U'), '&bull;'
-    assert_decode  [948].pack('U'), '&delta;'
+  context "with xhtml1 flavor" do
+    let(:codec) { HTMLEntities.new(:xhtml1) }
+
+    it_behaves_like "every codec"
+
+    it "decodes &apos;" do
+      expect(codec.decode("&apos;")).to eq("'")
+    end
+
+    it "skips entities from expanded set" do
+      expect(codec.decode("&vdash;")).to eq("&vdash;")
+      expect(codec.decode("&b.alpha;")).to eq("&b.alpha;")
+    end
   end
 
-  # Reported by ckruse
-  it "decodes only first element in masked entities" do
-    input = '&amp;#3346;'
-    expected = '&#3346;'
-    assert_decode expected, input
+  context "with html4 flavor" do
+    let(:codec) { HTMLEntities.new(:html4) }
+
+    it_behaves_like "every codec"
+
+    it "does not decode &apos;" do
+      expect(codec.decode("&apos;")).to eq("&apos;")
+    end
+
+    it "skips entities from expanded set" do
+      expect(codec.decode("&vdash;")).to eq("&vdash;")
+      expect(codec.decode("&b.alpha;")).to eq("&b.alpha;")
+    end
   end
 
-  it "ducktypes parameter to string before encoding" do
-    obj = Object.new
-    def obj.to_s; "foo"; end
-    assert_decode "foo", obj
-  end
+  context "with expanded flavor" do
+    let(:codec) { HTMLEntities.new(:expanded) }
 
-  it "decodes without semicolon if permissible" do
-    assert_decode "&\n\n\n", "&amp;\n\n\n"
-    assert_decode "&\r\n", "&amp;\r\n"
-    assert_decode '&<tag>', '&amp<tag>'
-  end
+    it_behaves_like "every codec"
 
-  it "ignores a semicolon that does not precede a newline or tag" do
-    assert_decode '&amp', '&amp'
-    assert_decode '&ampsome text', '&ampsome text'
-  end
+    it "decodes &apos;" do
+      expect(codec.decode("&apos;")).to eq("'")
+    end
 
+    it "decodes sgml entities" do
+      expect(codec.decode("&nvdash;")).to eq("⊬")
+      expect(codec.decode("&nsc;")).to eq("⊁")
+      expect(codec.decode("&b.alpha;")).to eq("α")
+      expect(codec.decode("&b.beta;")).to eq("β")
+    end
+  end
 end
