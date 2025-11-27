@@ -6,6 +6,9 @@ jobs:
   specs:
     name: Run specs
 
+    env:
+      RUN_INTEROPERABILITY_TESTS: "yes"
+
     strategy:
       fail-fast: true
       matrix:
