@@ -1,5 +1,4 @@
-# encoding: UTF-8
-require_relative "./spec_helper"
+require_relative "spec_helper"
 
 RSpec.describe "Decoding" do
   shared_examples "every codec" do
@@ -61,7 +60,7 @@ RSpec.describe "Decoding" do
     # Faults found and patched by Moonwolf
     it "decodes full hexadecimal range" do
       (0..127).each do |codepoint|
-        expect(codec.decode("&\#x#{codepoint.to_s(16)};")).to eq([codepoint].pack("U"))
+        expect(codec.decode("&#x#{codepoint.to_s(16)};")).to eq([codepoint].pack("U"))
       end
     end
 
@@ -74,7 +73,9 @@ RSpec.describe "Decoding" do
 
     it "casts parameter to string before encoding" do
       obj = Object.new
-      def obj.to_s; "foo"; end
+      def obj.to_s
+        "foo"
+      end
       expect(codec.decode(obj)).to eq("foo")
     end
 

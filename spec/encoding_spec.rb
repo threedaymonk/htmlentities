@@ -1,5 +1,4 @@
-# encoding: UTF-8
-require_relative "./spec_helper"
+require_relative "spec_helper"
 
 RSpec.describe "Encoding" do
   shared_examples "every codec" do
@@ -81,7 +80,9 @@ RSpec.describe "Encoding" do
 
     it "ducktypes parameter to string before encoding" do
       obj = Object.new
-      def obj.to_s; "foo"; end
+      def obj.to_s
+        "foo"
+      end
       expect(codec.encode(obj)).to eq("foo")
     end
   end

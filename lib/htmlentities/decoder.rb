@@ -7,8 +7,8 @@ class HTMLEntities
     end
 
     def decode(source)
-      prepare(source).gsub(@entity_regexp){
-        if $1 && codepoint = @map[$1]
+      prepare(source).gsub(@entity_regexp) {
+        if $1 && (codepoint = @map[$1])
           codepoint.chr(Encoding::UTF_8)
         elsif $2
           $2.to_i(10).chr(Encoding::UTF_8)
@@ -20,17 +20,18 @@ class HTMLEntities
       }
     end
 
-  private
+    private
+
     def prepare(string) #:nodoc:
       string.to_s.encode(Encoding::UTF_8)
     end
 
     def entity_regexp
-      key_lengths = @map.keys.map{ |k| k.length }
-      if @flavor == 'expanded'
-        entity_name_pattern = '(?:b\.)?[a-z][a-z0-9]'
+      key_lengths = @map.keys.map { |k| k.length }
+      entity_name_pattern = if @flavor == "expanded"
+        '(?:b\.)?[a-z][a-z0-9]'
       else
-        entity_name_pattern = '[a-z][a-z0-9]'
+        "[a-z][a-z0-9]"
       end
       /&(?:(#{entity_name_pattern}{#{key_lengths.min - 1},#{key_lengths.max - 1}})|#([0-9]{1,7})|#x([0-9a-f]{1,6}))(;|(?=\n|<))/i
     end

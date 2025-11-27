@@ -1,5 +1,4 @@
-# encoding: UTF-8
-$KCODE = 'u' unless "1.9".respond_to?(:encoding)
+$KCODE = "u" unless "1.9".respond_to?(:encoding)
 
 $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 require "htmlentities"

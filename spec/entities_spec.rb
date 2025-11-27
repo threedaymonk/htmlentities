@@ -1,10 +1,9 @@
-# encoding: UTF-8
-require_relative "./spec_helper"
+require_relative "spec_helper"
 
-describe 'Entities' do
+describe "Entities" do
   it "raises exception when unknown flavor specified" do
     expect {
-      HTMLEntities.new('foo')
+      HTMLEntities.new("foo")
     }.to raise_exception(HTMLEntities::UnknownFlavor)
   end
 
@@ -16,7 +15,7 @@ describe 'Entities' do
 
   it "allows upper case flavor" do
     expect {
-      HTMLEntities.new('XHTML1')
+      HTMLEntities.new("XHTML1")
     }.not_to raise_exception
   end
 end

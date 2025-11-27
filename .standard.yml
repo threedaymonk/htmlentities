@@ -1,0 +1,5 @@
+ignore:
+  - "util/build_entities.rb":
+    - Security/Open
+  - "lib/**/*.rb": # TODO: Remove when retiring Ruby 2.7 support
+    - Style/HashExcept

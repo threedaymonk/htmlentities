@@ -1,7 +1,6 @@
-# encoding: UTF-8
-require_relative "./spec_helper"
+require_relative "spec_helper"
 
-describe 'String encoding' do
+describe "String encoding" do
   it "encodes ascii to ascii" do
     s = "<elan>".encode(Encoding::US_ASCII)
     expect(s.encoding).to eq(Encoding::US_ASCII)

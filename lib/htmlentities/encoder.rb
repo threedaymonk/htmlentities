@@ -16,10 +16,13 @@ class HTMLEntities
       minimize_encoding(
         replace_extended(
           replace_basic(
-            prepare(source))))
+            prepare(source)
+          )
+        )
+      )
     end
 
-  private
+    private
 
     def prepare(string)
       string.to_s.encode(Encoding::UTF_8)
@@ -42,19 +45,19 @@ class HTMLEntities
     end
 
     def extended_entity_regexp
-      @extended_entity_regexp ||= (
+      @extended_entity_regexp ||= begin
         pattern = '[^\u{20}-\u{7E}]'
-        pattern << "|'" if @flavor == 'html4'
+        pattern << "|'" if @flavor == "html4"
         Regexp.new(pattern)
-      )
+      end
     end
 
     def replace_basic(string)
-      string.gsub(basic_entity_regexp){ |match| encode_basic(match) }
+      string.gsub(basic_entity_regexp) { |match| encode_basic(match) }
     end
 
     def replace_extended(string)
-      string.gsub(extended_entity_regexp){ |match| encode_extended(match) }
+      string.gsub(extended_entity_regexp) { |match| encode_extended(match) }
     end
 
     def validate_instructions(instructions)
@@ -78,7 +81,7 @@ class HTMLEntities
       elsif instructions.include?(:hexadecimal)
         method = :encode_hexadecimal
       end
-      instance_eval <<-END
+      instance_eval <<-END, __FILE__, __LINE__ + 1
         def encode_basic(char)
           #{method}(char)
         end
@@ -87,12 +90,14 @@ class HTMLEntities
 
     def build_extended_entity_encoder(instructions)
       operations = [:named, :decimal, :hexadecimal] & instructions
-      instance_eval <<-END
+      instance_eval <<~END, __FILE__, __LINE__ + 1
         def encode_extended(char)
-          #{operations.map{ |encoder| %{
+          #{operations.map { |encoder| 
+            %{
             encoded = encode_#{encoder}(char)
             return encoded if encoded
-          }}.join("\n")}
+          }
+          }.join("\n")}
           char
         end
       END
@@ -112,12 +117,12 @@ class HTMLEntities
     end
 
     def reverse_map
-      @reverse_map ||= (
+      @reverse_map ||= begin
         skips = HTMLEntities::SKIP_DUP_ENCODINGS[@flavor]
         map = HTMLEntities::MAPPINGS[@flavor]
-        uniqmap = skips ? map.reject{|ent,hx| skips.include? ent} : map
+        uniqmap = skips ? map.reject { |ent, hx| skips.include? ent } : map
         uniqmap.invert
-      )
+      end
     end
   end
 end

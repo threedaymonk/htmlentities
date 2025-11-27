@@ -1,5 +1,4 @@
-# encoding: UTF-8
-$KCODE = 'u' unless "1.9".respond_to?(:encoding)
+$KCODE = "u" unless "1.9".respond_to?(:encoding)
 
 require File.expand_path("../performance", __FILE__)
 require "ruby-prof"

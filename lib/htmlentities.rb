@@ -1,8 +1,7 @@
-# encoding: UTF-8
-require 'htmlentities/flavors'
-require 'htmlentities/encoder'
-require 'htmlentities/decoder'
-require 'htmlentities/version'
+require "htmlentities/flavors"
+require "htmlentities/encoder"
+require "htmlentities/decoder"
+require "htmlentities/version"
 
 #
 # HTML entity encoding and decoding for Ruby
@@ -29,7 +28,7 @@ class HTMLEntities
   # 'expanded' is a strict superset of the XHTML entities: every xhtml named
   # entity encodes and decodes the same under :expanded as under :xhtml1
   #
-  def initialize(flavor='xhtml1')
+  def initialize(flavor = "xhtml1")
     @flavor = flavor.to_s.downcase
     raise UnknownFlavor, "Unknown flavor #{flavor}" unless FLAVORS.include?(@flavor)
   end

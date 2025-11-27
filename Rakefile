@@ -1,13 +1,13 @@
 require "rspec/core/rake_task"
 require "rake/clean"
-require_relative "./lib/htmlentities/version"
+require_relative "lib/htmlentities/version"
 
 CLEAN.include("doc")
 DOCTYPES = %w[html4 xhtml1]
-DATA_FILES = DOCTYPES.map{ |d| "lib/htmlentities/mappings/#{d}.rb" }
+DATA_FILES = DOCTYPES.map { |d| "lib/htmlentities/mappings/#{d}.rb" }
 SOURCES = FileList["lib/**/*.rb"] - DATA_FILES
 
-task :default => [:entities, :spec]
+task default: [:entities, :spec]
 
 desc "Run the specs."
 RSpec::Core::RakeTask.new do |t|
@@ -17,15 +17,15 @@ end
 
 DOCTYPES.each do |name|
   file "lib/htmlentities/mappings/#{name}.rb" do |f|
-    sh %{ruby util/build_entities.rb #{name} > #{f.name}}
+    sh %(ruby util/build_entities.rb #{name} > #{f.name})
   end
 end
 
 file "doc" => SOURCES do |f|
-  sh %{rdoc #{SOURCES.join(' ')}}
+  sh %(rdoc #{SOURCES.join(" ")})
 end
 
-task :entities => DATA_FILES
+task entities: DATA_FILES
 
 desc "Run benchmark"
 task :benchmark do |t|
