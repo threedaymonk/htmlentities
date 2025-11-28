@@ -3,6 +3,27 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  lint:
+    name: Lint code
+
+    strategy:
+      fail-fast: true
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+
+      - name: Check formatting
+        run: bundle exec standardrb --format=progress
+
   specs:
     name: Run specs
 
