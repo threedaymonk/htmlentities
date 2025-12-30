@@ -48,4 +48,4 @@ jobs:
           bundler-cache: true
 
       - name: Run specs (Ruby ${{ matrix.ruby }})
-        run: bundle exec rspec
+        run: bundle exec rspec --format=documentation
