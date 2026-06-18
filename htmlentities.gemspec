@@ -15,6 +15,10 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
   s.extra_rdoc_files = %w[History.txt COPYING.txt]
   s.homepage = "https://github.com/threedaymonk/htmlentities"
+  s.metadata = {
+    "bug_tracker_uri" => "https://github.com/threedaymonk/htmlentities/issues",
+    "changelog_uri" => "https://github.com/threedaymonk/htmlentities/blob/main/History.txt"
+  }
   s.required_ruby_version = ">= 2.7.0"
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec", "~> 3"
